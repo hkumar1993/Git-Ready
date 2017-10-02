@@ -4,6 +4,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script type="text/javascript" src="./js/bundle.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Cutive+Mono" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,500,700" rel="stylesheet">
     <link rel="stylesheet" href="./css/reset.css">
     <link rel="stylesheet" href="./css/styles.css">
     <link rel="stylesheet" href="./css/head.css">
@@ -14,24 +15,25 @@
       <div class="head">
         <h1>Ready Git Go!</h1>
       </div>
-      <div class="terminal">
+      <div class="terminal window">
+        <h6>Terminal</h6>
         <ul id="terminal-command-list"></ul>
         <span>> </span><input id='command-input' type="text" name="command-input" value="">
       </div>
     </div>
     <div class="right">
-      <div class="git directory">
-        x
+      <div class="git directory window full">
+        <h6>Local Directory</h6>
       </div>
-      <div class="git stage">
-        x
+      <div class="git stage window hidden">
+        <h6>Staging Area</h6>
       </div>
-      <div class="repo">
-        <div class="git local">
-          x
+      <div class="repo hidden">
+        <div class="git local window full">
+          <h6>Local Repository</h6>
         </div>
-        <div class=" git remote">
-          x
+        <div class=" git remote window hidden">
+          <h6>Remote Repository</h6>
         </div>
       </div>
     </div>
