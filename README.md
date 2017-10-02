@@ -1,5 +1,5 @@
 # Ready Git Go - Learn Git Quick
----
+
 ## Background and Overview
 
 Ready Git Go is a game about git. The game is meant to teach users the basic concepts and terminal commands to get started with git, inspired by similar games like [Flexbox Froggies](http://flexboxfroggy.com/) and [Grid Garden](http://cssgridgarden.com/).
