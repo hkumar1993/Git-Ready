@@ -8,15 +8,35 @@ body {
 
 
 .hidden{
-  display: none;
+  display: none !important;
 }
 
 .left, .right{
   box-sizing: border-box;
   height: 100vh;
-  padding: 10px;
+  padding: 15px;
+}
+
+.left{
+  width: 40%;
 }
 
 .right{
+  width: 60%;
+}
 
+.window{
+  position: relative;
+}
+
+.window > h6 {
+  margin-bottom: 2px;
+  font-family: 'Roboto Mono', monospace;
+  color: black;
+  width: 100%;
+  /*font-weight: 300;*/
+  text-align: center;
+  position: absolute;
+  bottom: 100%;
+  left: 0%;
 }
