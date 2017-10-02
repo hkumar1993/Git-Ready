@@ -40,7 +40,7 @@ This project will be implemented using:
 ## Implementation Timeline
 ### Weekend
 - [x] Setup basic terminal view that accepts basic commands
-- [ ] Setup the webpack environment
+- [x] Setup the webpack environment
 
 ### Day 1:
 - [ ] Complete terminal that accepts commands and returns proper results
