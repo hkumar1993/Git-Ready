@@ -1,4 +1,5 @@
 const terminal = gitState => {
+  window.gitState = gitState
   $('#command-input').focus()
   $('.terminal').click(() => {
     $('#command-input').focus()
@@ -35,31 +36,37 @@ const executeCommand = gitState => {
   } else if (command === 'clear') {
     $('#terminal-command-list').empty()
   } else {
-    $('#terminal-command-list').append(`<div class='invalid'>${command} is not a valid function </div>`)
+    $('#terminal-command-list').
+      append(`<div class='invalid'>${command} is not a valid function </div>`)
   }
+  gitState.render(gitState)
 }
 
 const gitCommand = gitState => {
   const command = gitState.currentCommand
   if ( command === 'git init'){
-    gitState.initialized = true
-    $('.directory').removeClass('full')
-    $('.stage, .repo').removeClass('hidden')
-    return 'Initializing local repository'
-  } else if(command === 'rm -rf .git'){
-    gitState.initialized = false
-    $('.directory').addClass('full')
-    $('.stage, .repo').addClass('hidden')
-    return 'Deleting directory: .git'
+    if(!gitState.initialized){
+      gitState.initialized = true
+      gitState.fileStructure[".git"] = 'ignored'
+      return 'Initializing local repository'
+    } else {
+      return 'git already initialized'
+    }
+  } else if( command === 'rm -rf .git'){
+    if(gitState.initialized){
+      gitState.initialized = false
+      delete gitState.fileStructure[".git"]
+      return 'Deleted directory: .git'
+    } else {
+      return 'directory .git not found'
+    }
   } else if (command.slice(0,10) === 'git remote') {
     if(gitState.initialized){
       if (command.slice(11, 14) === 'add'){
-        $('.local').removeClass('full')
-        $('.remote').removeClass('hidden')
+        gitState.remote = true
         return 'Remote Repository added'
       } else if (command.slice(11, 17) === 'remove') {
-        $('.local').addClass('full')
-        $('.remote').addClass('hidden')
+        gitState.remote = false
         return 'Removed remote repository'
       } else {
         return "<div class='invalid'>Invalid command</div>"
