@@ -43,3 +43,25 @@
 .remote{
   margin-left: 5px;
 }
+
+.directory > ul, .stage > ul, .local > ul, .remote > ul{
+  display: flex;
+  flex-flow: row wrap;
+}
+.directory > ul li, .stage > ul li, .local > ul li, .remote > ul li{
+  width: 10%;
+  margin: 5px;
+}
+
+.directory > ul li p, .stage > ul li p, .local > ul li p, .remote > ul li p{
+  text-align: center;
+}
+
+.directory img, .stage img, .local img, .remote img{
+  width: 100%;
+  transition: all 0.2s ease-in-out;
+}
+
+.directory img:hover, .stage img:hover, .local img:hover, .remote img:hover{
+  transform: scale(1.1);
+}
