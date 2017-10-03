@@ -1,5 +1,5 @@
 import terminal from './terminal'
-import levelSelection from './level_selection'
+import { levelSelection, levelStructure } from './level_selection'
 import render from './display'
 
 $(document).ready(() => {
@@ -11,8 +11,20 @@ $(document).ready(() => {
     fileStructure: {
     },
     level: 0,
-    render
+    previousLevel: 0,
+    render,
+    commitHistory: [{
+      fileStructure: {
+        '.git':'ignored',
+        'cat': 'committed',
+        'dog': 'committed'
+      },
+      message: 'test'
+    }],
+    commit: ''
   }
+  gitState.fileStructure = levelStructure(gitState)
+  gitState.render(gitState)
   levelSelection(gitState)
   terminal(gitState);
 })
