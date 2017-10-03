@@ -7,16 +7,13 @@ const terminal = gitState => {
   $('#command-input').keyup( e => {
     if(e.which === 13){
       $(e.target).addClass('hidden')
-      console.log(gitState);
       if(gitState.currentCommand !== ''){
         gitState.previousCommands.push(gitState.currentCommand)
       }
       gitState.currentCommand = e.target.value.trim()
-      console.log(gitState);
       $('#terminal-command-list').append(`<li>${gitState.currentCommand}</li>`)
       if(gitState.currentCommand !== ''){
         executeCommand(gitState)
-        console.log(gitState);
       }
       $('#terminal-command-list').
       animate({scrollTop: $('#terminal-command-list').
@@ -40,7 +37,6 @@ const executeCommand = gitState => {
     $('#terminal-command-list').
       append(`<div class='invalid'>${command} is not a valid function </div>`)
   }
-  console.log(gitState);
   gitState.render(gitState)
 }
 
@@ -148,7 +144,6 @@ const stageFiles = (gitState, keys) => {
 }
 
 const commitFiles = (gitState, message) => {
-  console.log(message);
   if(message === ''){
     return "<div class='invalid'>No message was writtenr</div>"
   } else {
@@ -158,16 +153,12 @@ const commitFiles = (gitState, message) => {
     }
 
     Object.keys(gitState.fileStructure).forEach(file => {
-      console.log(file);
-      console.log(gitState.fileStructure[file]);
       if(gitState.fileStructure[file] === 'staged' || gitState.fileStructure[file] === 'committed'){
-        console.log('COMMITTING');
         commit.fileStructure[file] = 'committed'
         gitState.fileStructure[file] = 'committed'
       }
 
       if(gitState.fileStructure[file] === 'deleted'){
-        console.log('COMMITTING');
         commit.fileStructure[file] = 'deleted'
         delete gitState.fileStructure[file]
       }

@@ -17,11 +17,13 @@ $(document).ready(() => {
       fileStructure: {
         '.git':'ignored',
         'cat': 'committed',
-        'dog': 'committed'
+        'dog':'committed'
       },
       message: 'test'
     }],
-    commit: ''
+    commit: '',
+    step: '',
+    instructions: ''
   }
   gitState.fileStructure = levelStructure(gitState)
   gitState.render(gitState)

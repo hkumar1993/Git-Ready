@@ -10,8 +10,6 @@ h1{
   color: white;
 }
 
-
-
 .terminal{
   height: 50%;
   font-family: 'Cutive Mono', monospace;
@@ -53,4 +51,55 @@ h1{
 
 #terminal-command-list div.invalid{
   color: red;
+}
+
+.level-instructions{
+  margin-top: 20px;
+  color: white;
+
+}
+
+.header{
+  display: flex;
+  justify-content: space-between;
+  margin: 10px 0;
+}
+
+.header h2{
+  font-size: 20px;
+  font-weight: 700;
+  background-color: rgba(256, 256, 256, 0.3);
+  padding: 5px 10px;
+}
+
+#instructions{
+  font-size: 20px;
+  line-height: 1.5;
+}
+
+.bg{
+  background-color: rgba(256, 256, 256, 0.3);
+  padding: 1px 6px;
+}
+
+.select-style {
+    border: 1px solid #ccc;
+    width: 120px;
+    border-radius: 3px;
+    overflow: hidden;
+    background: #fafafa url("img/icon-select.png") no-repeat 90% 50%;
+}
+
+.select-style select {
+    padding: 5px 8px;
+    width: 130%;
+    border: none;
+    box-shadow: none;
+    background: transparent;
+    background-image: none;
+    -webkit-appearance: none;
+}
+
+.select-style select:focus {
+    outline: none;
 }

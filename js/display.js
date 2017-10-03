@@ -1,7 +1,6 @@
 import { levelStructure } from './level_selection'
 
 const render = gitState => {
-  console.log('INSIDE RENDER');
   ['directory','stage','local', 'remote'].forEach(point => {
     $(`.${point} > ul`).remove()
     $(`.${point}`).append('<ul></ul>')
@@ -11,6 +10,10 @@ const render = gitState => {
     gitState.previousLevel = gitState.level
     gitState.fileStructure = levelStructure(gitState)
   }
+  $('#instructions').empty()
+  $('#step').empty()
+  $('#step').append(`${gitState.step}`)
+  $('#instructions').append(`${gitState.instructions}`)
 
   $('#level-selector').val(gitState.level)
 
@@ -41,7 +44,6 @@ const render = gitState => {
   })
 
   Object.keys(gitState.fileStructure).forEach(file => {
-    console.log(file);
     switch (gitState.fileStructure[file]) {
       case 'remote':
         $('.remote > ul').append(`<li class='committed'><img src='./img/${file}.png'/></li>`)
