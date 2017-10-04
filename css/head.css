@@ -76,6 +76,10 @@ h1{
   color: red;
 }
 
+#terminal-command-list div.commit-head{
+  color: yellow;
+}
+
 .level-instructions{
   margin-top: 20px;
   color: white;
