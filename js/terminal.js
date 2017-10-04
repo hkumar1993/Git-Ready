@@ -6,11 +6,12 @@ const terminal = gitState => {
   })
   $('#command-input').keyup( e => {
     if(e.which === 13){
+      gitState.terminalCount = 0
       $(e.target).addClass('hidden')
-      if(gitState.currentCommand !== ''){
-        gitState.previousCommands.push(gitState.currentCommand)
-      }
       gitState.currentCommand = e.target.value.trim()
+      if(gitState.currentCommand !== ''){
+        gitState.previousCommands.unshift(gitState.currentCommand)
+      }
       $('#terminal-command-list').append(`<li>${gitState.currentCommand}</li>`)
       if(gitState.currentCommand !== ''){
         executeCommand(gitState)
@@ -21,6 +22,20 @@ const terminal = gitState => {
       e.target.value = ''
       $(e.target).removeClass('hidden')
       $('#command-input').focus()
+    } else if (e.which === 38){
+      if(gitState.previousCommands.length){
+        e.target.value = gitState.previousCommands[gitState.terminalCount]
+        if(gitState.terminalCount < gitState.previousCommands.length - 1){
+          gitState.terminalCount++
+        }
+      }
+    } else if (e.which === 40){
+      if(gitState.previousCommands.length){
+        e.target.value = gitState.previousCommands[gitState.terminalCount]
+        if(gitState.terminalCount > 0){
+          gitState.terminalCount--
+        }
+      }
     }
   })
 }
@@ -62,7 +77,7 @@ const gitCommand = gitState => {
 
   if(!gitState.initialized){
     if ( command.slice(4,8) === 'init'){
-      if(gitState.level === 0){
+      if(gitState.level === 1){
         gitState.level++
       }
       gitState.initialized = true
@@ -77,6 +92,12 @@ const gitCommand = gitState => {
       return "<div class='invalid'>git already initialized</div>"
     } else if( command.slice(4,7) === 'add') {
       if (command.slice(8) === '-A') {
+        if(gitState.level === 3 || gitState.level === 3.1){
+          return "<div class='invalid'>Getting a little ahead of ourselves are we? Add just one file for now</div>"
+        }
+        if (gitState.level === 3.2){
+          gitState.level = 4
+        }
         return stageFiles(gitState, Object.keys(gitState.fileStructure))
       } else if (command.slice(8) === '') {
         return "<div class='invalid'>did not select any files to add</div>"
@@ -96,7 +117,7 @@ const gitCommand = gitState => {
       } else {
         return 'dont forget the -m, you don\'t want to open a text editor to write a simple commit'
       }
-    } else if (command.slice(0,10) === 'git remote') {
+    } else if (command.slice(4,10) === 'remote') {
       if(gitState.initialized){
         if (command.slice(11, 14) === 'add'){
           gitState.remote = true
@@ -110,7 +131,19 @@ const gitCommand = gitState => {
       } else {
         return "<div class='invalid'>git not initialized</div>"
       }
-    } else {
+    } else if (command.slice(4,10) === 'config') {
+      if(command.slice(11,29) === '--global user.name' || command.slice(11,20) === 'user.name'){
+        gitState.username = command.split(' ')[2] === '--global' ?
+          command.split(' ').slice(4).join(' ') : command.split(' ').slice(3).join(' ').slice(1,-1)
+        if(gitState.level === 2){
+          gitState.level++
+        }
+
+        return `<div>Username changed to ${gitState.username}</div>`
+      } else {
+        return `<div class='invalid'>${command} is not valid</div>`
+      }
+    } else  {
       return `<div class='invalid'>${command} is not valid</div>`
     }
   }
@@ -126,16 +159,25 @@ const stageFiles = (gitState, keys) => {
     } else {
       missing.push(key)
     }
-    Object.keys(gitState.commitHistory[0].fileStructure).forEach( key => {
-      if(gitState.commitHistory[0].fileStructure[key] === 'deleted'){
-        delete gitState.commitHistory[0].fileStructure[key]
-      } else {
-        if(!gitState.fileStructure[key]){
-          gitState.fileStructure[key] = 'deleted'
+    if(gitState.commitHistory.length){
+      Object.keys(gitState.commitHistory[0].fileStructure).forEach( key => {
+        if(gitState.commitHistory[0].fileStructure[key] === 'deleted'){
+          delete gitState.commitHistory[0].fileStructure[key]
+        } else {
+          if(!gitState.fileStructure[key]){
+            gitState.fileStructure[key] = 'deleted'
+          }
         }
-      }
-    })
+      })
+    }
   })
+  if(keys[0] === 'panda' && keys.length === 1 && gitState.level === 3 ){
+    gitState.level = 3.1
+  }
+  if(keys[0] === 'gorilla' && keys.length === 1 && gitState.level === 3.1 ){
+    gitState.level = 3.2
+  }
+
   if(missing.length){
     return 'Some files were not staged'
   } else {

@@ -8,14 +8,17 @@ const render = gitState => {
 
   if(gitState.level !== gitState.previousLevel){
     gitState.previousLevel = gitState.level
-    gitState.fileStructure = levelStructure(gitState)
+    levelStructure(gitState)
   }
   $('#instructions').empty()
   $('#step').empty()
   $('#step').append(`${gitState.step}`)
   $('#instructions').append(`${gitState.instructions}`)
 
-  $('#level-selector').val(gitState.level)
+  if(gitState.username!==''){
+    $('.directory > h6').empty()
+    $('.directory > h6').append(`${gitState.username}'s Local Directory`)
+  }
 
   if(gitState.initialized){
     $('.directory').removeClass('full')
@@ -32,16 +35,17 @@ const render = gitState => {
     $('.local').addClass('full')
     $('.remote').addClass('hidden')
   }
-
-  Object.keys(gitState.commitHistory[0].fileStructure).forEach(file => {
-    switch (gitState.commitHistory[0].fileStructure[file]) {
-      case 'committed':
+  if(gitState.commitHistory.length){
+    Object.keys(gitState.commitHistory[0].fileStructure).forEach(file => {
+      switch (gitState.commitHistory[0].fileStructure[file]) {
+        case 'committed':
         $('.local > ul').append(`<li class='committed'>
         <img src='./img/${file}.png'/>
         </li>`)
         break;
-    }
-  })
+      }
+    })
+  }
 
   Object.keys(gitState.fileStructure).forEach(file => {
     switch (gitState.fileStructure[file]) {

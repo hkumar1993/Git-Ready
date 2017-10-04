@@ -10,22 +10,17 @@ $(document).ready(() => {
     previousCommands: [],
     fileStructure: {
     },
-    level: 0,
-    previousLevel: 0,
+    terminalCount: 0,
+    level: 1,
+    previousLevel: 1,
     render,
-    commitHistory: [{
-      fileStructure: {
-        '.git':'ignored',
-        'cat': 'committed',
-        'dog':'committed'
-      },
-      message: 'test'
-    }],
+    commitHistory: [],
     commit: '',
     step: '',
-    instructions: ''
+    instructions: '',
+    username: ''
   }
-  gitState.fileStructure = levelStructure(gitState)
+  levelStructure(gitState)
   gitState.render(gitState)
   levelSelection(gitState)
   terminal(gitState);
