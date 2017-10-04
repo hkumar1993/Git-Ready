@@ -10,14 +10,14 @@ Users will interact with a virtual terminal using the same commands as they woul
 
 ## Functionality & MVP
 
-- [ ] Working terminal that can understand and accept basic terminal commands
-- [ ] Multiple levels taking the user through the setup of a git repository
-- [ ] Display of each "stage" of the git environment:
+- [x] Working terminal that can understand and accept basic terminal commands
+- [x] Multiple levels taking the user through the setup of a git repository
+- [x] Display of each "stage" of the git environment:
   * Local directory
-  * Stagin Area
+  * Staging Area
   * Local repository
   * Remote repository
-- [ ] Terminal commands can manipulate the "file structure"
+- [x] Terminal commands can manipulate the "file structure"
 
 ### Bonus
 - [ ] A "free-roam" mode where the user can practice what they've learnt by going through the entire setup again without any instructions
@@ -43,19 +43,19 @@ This project will be implemented using:
 - [x] Setup the webpack environment
 
 ### Day 1:
-- [ ] Complete terminal that accepts commands and returns proper results
-- [ ] Set up git stage views that are manipulated by the terminal
-- [ ] Begin creating the "file directory" with the various animals
-- [ ] Initial styling
+- [x] Complete terminal that accepts commands and returns proper results
+- [x] Set up git stage views that are manipulated by the terminal
+- [x] Begin creating the "file directory" with the various animals
+- [x] Initial styling
 
 ### Day 2:
-- [ ] Draft levels and file structure for each level
-- [ ] Setup the file directory to be manipulated by the terminal commands
-- [ ] Begin coding first few levels
+- [x] Draft levels and file structure for each level
+- [x] Setup the file directory to be manipulated by the terminal commands
+- [x] Begin coding first few levels
 
 ### Day 3:
 - [ ] Complete all levels
-- [ ] Setup up virtual terminal to control the git views using various git commands
+- [x] Setup up virtual terminal to control the git views using various git commands
 
 ### Day 4:
 - [ ] Final debugging
