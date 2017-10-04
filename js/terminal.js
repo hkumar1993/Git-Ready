@@ -40,7 +40,11 @@ const terminal = gitState => {
   })
 }
 
+import { nextStep, prevStep } from './level_selection'
+
+
 const executeCommand = gitState => {
+
   const command = gitState.currentCommand
   if (command.slice(0,3) === 'git'){
     $('#terminal-command-list').append(`<div>${gitCommand(gitState)}</div>`)
@@ -48,6 +52,10 @@ const executeCommand = gitState => {
     $('#terminal-command-list').empty()
   } else if( command.slice(0,2) === 'rm'){
     $('#terminal-command-list').append(`<div>${rmCommand(gitState)}</div>`)
+  } else if ( command === 'next') {
+    nextStep(gitState)
+  } else if ( command === 'prev') {
+    prevStep(gitState)
   } else {
     $('#terminal-command-list').
       append(`<div class='invalid'>${command} is not a valid function </div>`)
@@ -77,11 +85,12 @@ const gitCommand = gitState => {
 
   if(!gitState.initialized){
     if ( command.slice(4,8) === 'init'){
-      if(gitState.level === 1){
-        gitState.level++
+      if(gitState.level === 1.1){
+        gitState.level = 2
       }
       gitState.initialized = true
-      gitState.fileStructure[".git"] = 'ignored'
+      gitState.fileStructure[".git"].status = 'ignored'
+      gitState.fileStructure[".git"].details = 'folder'
       return 'Initializing local repository'
 
     } else {
@@ -143,9 +152,30 @@ const gitCommand = gitState => {
       } else {
         return `<div class='invalid'>${command} is not valid</div>`
       }
+    } else if (command === 'git log') {
+      if(gitState.level === 5){
+        gitState.level = 5.1
+      }
+      return `${logHistory(gitState)}`
     } else  {
       return `<div class='invalid'>${command} is not valid</div>`
     }
+  }
+}
+
+const logHistory = gitState => {
+  if(gitState.commitHistory.length){
+    let commits = ''
+    gitState.commitHistory.forEach((commit, index) => {
+      commits+=`<div class='commit-head'>commit: ${commit.id} ${index === 0 ? "<span class='commit-head'>HEAD -> master</span>":""}</div>`
+      commits+=`<div>Author: ${commit.username}</div>`
+      commits+=`<div>Date: ${commit.timeStamp}</div>`
+      commits+=`<div class='commit-message'>${commit.message}</div>`
+      commits+=`<br />`
+    })
+    return commits
+  } else {
+    return "<div class='invalid'>No git history</div>"
   }
 }
 
@@ -153,41 +183,45 @@ const stageFiles = (gitState, keys) => {
   const missing = []
   keys.forEach(key => {
     if(gitState.fileStructure[key]){
-      if(gitState.fileStructure[key] === 'new' || gitState.fileStructure[key] === 'editted'){
-        gitState.fileStructure[key]='staged'
+      if(gitState.fileStructure[key].status === 'new' || gitState.fileStructure[key].status === 'editted'){
+        gitState.fileStructure[key].status='staged'
       }
     } else {
       missing.push(key)
     }
     if(gitState.commitHistory.length){
       Object.keys(gitState.commitHistory[0].fileStructure).forEach( key => {
-        if(gitState.commitHistory[0].fileStructure[key] === 'deleted'){
-          delete gitState.commitHistory[0].fileStructure[key]
+        if(gitState.commitHistory[0].fileStructure[key].status === 'deleted'){
+          delete gitState.commitHistory[0].fileStructure[key].status
         } else {
           if(!gitState.fileStructure[key]){
-            gitState.fileStructure[key] = 'deleted'
+            gitState.fileStructure[key].status = 'deleted'
           }
         }
       })
     }
   })
+  const staged = Object.keys(gitState.fileStructure).filter(file => gitState.fileStructure[file].status === 'staged' )
   if(keys[0] === 'panda' && keys.length === 1 && gitState.level === 3 ){
     gitState.level = 3.1
   }
   if(keys[0] === 'gorilla' && keys.length === 1 && gitState.level === 3.1 ){
     gitState.level = 3.2
   }
-
-  if(missing.length){
-    return 'Some files were not staged'
+  if(staged.length){
+    if(missing.length){
+      return 'Some files were not staged'
+    } else {
+      return 'All files staged'
+    }
   } else {
-    return 'All files staged'
+    return 'No files to stage'
   }
 }
 
 const commitFiles = (gitState, message) => {
-  if(message === ''){
-    return "<div class='invalid'>No message was writtenr</div>"
+  if(message.slice(1,-1) === ''){
+    return "<div class='invalid'>No message was written</div>"
   } else {
     const commit = {
       fileStructure: {},
@@ -195,19 +229,26 @@ const commitFiles = (gitState, message) => {
     }
 
     Object.keys(gitState.fileStructure).forEach(file => {
-      if(gitState.fileStructure[file] === 'staged' || gitState.fileStructure[file] === 'committed'){
-        commit.fileStructure[file] = 'committed'
-        gitState.fileStructure[file] = 'committed'
+      if(gitState.fileStructure[file].status === 'staged' || gitState.fileStructure[file].status === 'committed'){
+        commit.fileStructure[file]= gitState.fileStructure[file]
+        gitState.fileStructure[file].status = 'committed'
       }
 
       if(gitState.fileStructure[file] === 'deleted'){
-        commit.fileStructure[file] = 'deleted'
+        commit.fileStructure[file].status = 'deleted'
         delete gitState.fileStructure[file]
       }
     })
     if(Object.keys(commit.fileStructure).length){
       commit.message = message
+      commit.timeStamp = new Date()
+      commit.id = Math.floor(Math.random() * 1000000)
+      commit.username = gitState.username
       gitState.commitHistory.unshift(Object.assign({}, commit))
+      console.log(gitState.level);
+      if(gitState.level === 4.1){
+        gitState.level = 5
+      }
       return 'files committed'
     } else {
       return "<div class='invalid'>nothing to commit</div>"
