@@ -37,10 +37,10 @@ const render = gitState => {
   }
   if(gitState.commitHistory.length){
     Object.keys(gitState.commitHistory[0].fileStructure).forEach(file => {
-      switch (gitState.commitHistory[0].fileStructure[file]) {
+      switch (gitState.commitHistory[0].fileStructure[file].status) {
         case 'committed':
         $('.local > ul').append(`<li class='committed'>
-        <img src='./img/${file}.png'/>
+        <img src='./img/${gitState.fileStructure[file].details}.png'/>
         </li>`)
         break;
       }
@@ -48,37 +48,37 @@ const render = gitState => {
   }
 
   Object.keys(gitState.fileStructure).forEach(file => {
-    switch (gitState.fileStructure[file]) {
+    switch (gitState.fileStructure[file].status) {
       case 'remote':
-        $('.remote > ul').append(`<li class='committed'><img src='./img/${file}.png'/></li>`)
-        $('.local > ul').append(`<li class='committed'><img src='./img/${file}.png'/></li>`)
-        $('.directory > ul').append(`<li class='committed'><img src='./img/${file}.png'/></li>`)
+        $('.remote > ul').append(`<li class='committed'><img src='./img/${gitState.fileStructure[file].details}.png'/></li>`)
+        $('.local > ul').append(`<li class='committed'><img src='./img/${gitState.fileStructure[file].details}.png'/></li>`)
+        $('.directory > ul').append(`<li class='committed'><img src='./img/${gitState.fileStructure[file].details}.png'/></li>`)
         break;
 
       case 'committed':
-        $('.directory > ul').append(`<li class='committed'><img src='./img/${file}.png'/></li>`)
+        $('.directory > ul').append(`<li class='committed'><img src='./img/${gitState.fileStructure[file].details}.png'/></li>`)
         break;
 
       case 'staged':
-        $('.stage > ul').append(`<li class='staged'><img src='./img/${file}.png'/></li>`)
-        $('.directory > ul').append(`<li class='staged'><img src='./img/${file}.png'/></li>`)
+        $('.stage > ul').append(`<li class='staged'><img src='./img/${gitState.fileStructure[file].details}.png'/></li>`)
+        $('.directory > ul').append(`<li class='staged'><img src='./img/${gitState.fileStructure[file].details}.png'/></li>`)
         break;
 
       case 'new':
-        $('.directory > ul').append(`<li class='new'><img src='./img/${file}.png'/></li>`)
+        $('.directory > ul').append(`<li class='new'><img src='./img/${gitState.fileStructure[file].details}.png'/></li>`)
         break;
 
       case 'ignored':
-        if(file.slice(0,1) === '.'){
+        if(gitState.fileStructure[file].details === 'folder'){
           $('.directory > ul').append(`<li class='committed'><img src='./img/folder.png'/><p>${file}</p></li>`)
 
         } else {
-          $('.directory > ul').append(`<li class='committed'><img src='./img/${file}.png'/></li>`)
+          $('.directory > ul').append(`<li class='committed'><img src='./img/${gitState.fileStructure[file].details}.png'/></li>`)
         }
         break;
 
       case 'editted':
-        $('.directory > ul').append(`<li class='edit'><img src='./img/${file}.png'/></li>`)
+        $('.directory > ul').append(`<li class='editted'><img src='./img/${gitState.fileStructure[file].details}.png'/></li>`)
         break;
     }
   })
