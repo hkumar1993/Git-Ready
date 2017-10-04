@@ -11,7 +11,7 @@ h1{
 }
 
 .terminal{
-  height: 50%;
+  height: 45%;
   font-family: 'Cutive Mono', monospace;
   font-size: 16px;
   background-color: #191919;
@@ -26,11 +26,28 @@ h1{
 .terminal input{
   font-family: 'Cutive Mono', monospace;
   width: 90%;
-  font-size: 16px;
+  font-size: 18px;
   background: none;
   border: none;
   outline: none;
   color: #13c24f;
+}
+
+#prev-level, #next-level{
+  padding: 0 10px;
+  background-color: rgba(256, 256, 256, 0.3);
+  color: white;
+  border: 1px solid white;
+  cursor: pointer;
+}
+#prev-level:hover, #next-level:hover{
+  background-color: rgba(256, 256, 256, 0.8);
+}
+#prev-level{
+  border-radius: 5px 0 0 5px;
+}
+#next-level{
+  border-radius: 0 5px 5px 0;
 }
 
 
@@ -40,13 +57,19 @@ h1{
   list-style: none;
   padding: 0;
   margin: 0;
+  line-height: 1.5;
 }
 
 #terminal-command-list li::before{
   content: '> '
 }
 #terminal-command-list li{
+  font-size: 18px;
   margin: 5px 0;
+}
+
+#terminal-command-list div{
+  color: white;
 }
 
 #terminal-command-list div.invalid{
@@ -59,10 +82,12 @@ h1{
 
 }
 
+
+
 .header{
   display: flex;
-  justify-content: space-between;
-  margin: 10px 0;
+  justify-content: flex-start;
+  margin: 10px 0 20px 0;
 }
 
 .header h2{
@@ -70,36 +95,20 @@ h1{
   font-weight: 700;
   background-color: rgba(256, 256, 256, 0.3);
   padding: 5px 10px;
+  border: 1px solid white;
+  width: 50%;
 }
 
 #instructions{
-  font-size: 20px;
-  line-height: 1.5;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 2;
+  font-family: 'Roboto', sans-serif;
 }
 
 .bg{
   background-color: rgba(256, 256, 256, 0.3);
   padding: 1px 6px;
-}
-
-.select-style {
-    border: 1px solid #ccc;
-    width: 120px;
-    border-radius: 3px;
-    overflow: hidden;
-    background: #fafafa url("img/icon-select.png") no-repeat 90% 50%;
-}
-
-.select-style select {
-    padding: 5px 8px;
-    width: 130%;
-    border: none;
-    box-shadow: none;
-    background: transparent;
-    background-image: none;
-    -webkit-appearance: none;
-}
-
-.select-style select:focus {
-    outline: none;
+  font-family: 'Cutive Mono', monospace;
+  font-weight: 700;
 }
