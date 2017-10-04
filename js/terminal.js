@@ -89,8 +89,12 @@ const gitCommand = gitState => {
         gitState.level = 2
       }
       gitState.initialized = true
-      gitState.fileStructure[".git"].status = 'ignored'
-      gitState.fileStructure[".git"].details = 'folder'
+      gitState.fileStructure[".git"] = {
+        'status': 'ignored',
+        'details': 'folder'
+      }
+
+
       return 'Initializing local repository'
 
     } else {
@@ -179,33 +183,33 @@ const logHistory = gitState => {
   }
 }
 
-const stageFiles = (gitState, keys) => {
+const stageFiles = (gitState, files) => {
   const missing = []
-  keys.forEach(key => {
-    if(gitState.fileStructure[key]){
-      if(gitState.fileStructure[key].status === 'new' || gitState.fileStructure[key].status === 'editted'){
-        gitState.fileStructure[key].status='staged'
+  files.forEach(file => {
+    if(gitState.fileStructure[file]){
+      if(gitState.fileStructure[file].status === 'new' || gitState.fileStructure[file].status === 'editted'){
+        gitState.fileStructure[file].status='staged'
       }
     } else {
-      missing.push(key)
+      missing.push(file)
     }
     if(gitState.commitHistory.length){
-      Object.keys(gitState.commitHistory[0].fileStructure).forEach( key => {
-        if(gitState.commitHistory[0].fileStructure[key].status === 'deleted'){
-          delete gitState.commitHistory[0].fileStructure[key].status
+      Object.keys(gitState.commitHistory[0].fileStructure).forEach( file => {
+        if(gitState.commitHistory[0].fileStructure[file].status === 'deleted'){
+          delete gitState.commitHistory[0].fileStructure[file].status
         } else {
-          if(!gitState.fileStructure[key]){
-            gitState.fileStructure[key].status = 'deleted'
+          if(!gitState.fileStructure[file]){
+            gitState.fileStructure[file].status = 'deleted'
           }
         }
       })
     }
   })
   const staged = Object.keys(gitState.fileStructure).filter(file => gitState.fileStructure[file].status === 'staged' )
-  if(keys[0] === 'panda' && keys.length === 1 && gitState.level === 3 ){
+  if(files[0] === 'bear' && files.length === 1 && gitState.level === 3 ){
     gitState.level = 3.1
   }
-  if(keys[0] === 'gorilla' && keys.length === 1 && gitState.level === 3.1 ){
+  if(files[0] === 'gorilla' && files.length === 1 && gitState.level === 3.1 ){
     gitState.level = 3.2
   }
   if(staged.length){

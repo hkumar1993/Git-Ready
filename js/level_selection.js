@@ -108,7 +108,7 @@ export const levelStructure = gitState => {
       break;
     case 5.1:
       gitState.instructions =
-      "Woah! What are all these numbers? And what is this <span class='bg'>HEAD</span> and <span class='bg'>master</span> business?<p></p>"
+      "Woah! What are all these numbers? And what is this <span class='bg'>HEAD</span> and <span class='bg'>master</span> business?<p>The <span class='bg'>HEAD</span> acts as a pointer to your latest commit. The numbers act as an ID for your commit, which can be used to refer to specific commits that are not your current HEAD. <span class='bg'>master</span> refers to the branch that the commit came from. You will see in later steps the importance of each of these in more detail.</p><p>Go to the <span class='bg'>next</span> step</p>"
       break;
     default:
       gitState.fileStructure = gitState.fileStructure
