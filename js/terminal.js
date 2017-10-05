@@ -1,3 +1,6 @@
+import _ from 'lodash'
+import union from 'lodash/union'
+
 const terminal = gitState => {
   window.gitState = gitState
   $('#command-input').focus()
@@ -121,6 +124,9 @@ const gitCommand = gitState => {
       if( command.slice(11,13) === '-m'){
         return commitFiles(gitState, command.slice(14))
       } else if ( command.slice(11,14) === '-am' || command.slice(11,16) === '-a -m'){
+        if(gitState.level === 6.1){
+          gitState.level = 7
+        }
         if(gitState.commitHistory[0]){
           stageFiles(gitState, Object.keys(gitState.commitHistory[0].fileStructure))
           return commitFiles(gitState, command.slice(14))
@@ -161,6 +167,11 @@ const gitCommand = gitState => {
         gitState.level = 5.1
       }
       return `${logHistory(gitState)}`
+    } else if (command.slice(4,8) === 'diff') {
+      if(gitState.level === 6){
+        gitState.level = 6.1
+      }
+      return gitDiff(gitState, command.slice(9))
     } else  {
       return `<div class='invalid'>${command} is not valid</div>`
     }
@@ -181,6 +192,32 @@ const logHistory = gitState => {
   } else {
     return "<div class='invalid'>No git history</div>"
   }
+}
+
+const gitDiff = (gitState, command) => {
+  let result = ''
+  let files = []
+  if(command === ''){
+    files = _.union(Object.keys(gitState.commitHistory[0].fileStructure), Object.keys(gitState.fileStructure))
+  } else {
+    files = command.split(' ')
+  }
+  files.forEach( file => {
+    if(gitState.fileStructure[file] && !gitState.commitHistory[0].fileStructure[file]){
+      if(gitState.fileStructure[file].status !=='ignored'){
+        result +=  `<div class='valid'>+++ ${file}: details: ${gitState.fileStructure[file].details}</div><div class='invalid'></div>`
+      }
+    } else if (!gitState.fileStructure[file] && gitState.commitHistory[0].fileStructure[file]){
+      result +=  `<div class='valid'></div><div class='invalid'>--- ${file}: details: ${gitState.commitHistory[0].fileStructure[file].details}</div>`
+    } else if (gitState.fileStructure[file] && gitState.commitHistory[0].fileStructure[file]) {
+      if(gitState.fileStructure[file].details !== gitState.commitHistory[0].fileStructure[file].details){
+        result +=  `<div class='valid'>+++ ${file}: details: ${gitState.fileStructure[file].details}</div><div class='invalid'>--- ${file}: details: ${gitState.commitHistory[0].fileStructure[file].details}</div>`
+      }
+    } else {
+      result += `<div class='invalid'>${file} does not exist</div>`
+    }
+  })
+  return result
 }
 
 const stageFiles = (gitState, files) => {
