@@ -199,7 +199,9 @@ const stageFiles = (gitState, files) => {
           delete gitState.commitHistory[0].fileStructure[file].status
         } else {
           if(!gitState.fileStructure[file]){
-            gitState.fileStructure[file].status = 'deleted'
+            gitState.fileStructure[file] = {
+              status: 'deleted'
+            }
           }
         }
       })

@@ -40,7 +40,7 @@ const render = gitState => {
       switch (gitState.commitHistory[0].fileStructure[file].status) {
         case 'committed':
         $('.local > ul').append(`<li class='committed'>
-        <img src='./img/${gitState.fileStructure[file].details}.png'/>
+        <img src='./img/${gitState.commitHistory[0].fileStructure[file].details}.png'/>
         </li>`)
         break;
       }
