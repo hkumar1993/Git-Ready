@@ -124,8 +124,8 @@ export const levelStructure = gitState => {
       "Great! We can see we changed the bear from being a regular bear to a panda, and removed the bat altogether. Let's commit these changes again. All files in the local repository are  called 'tracked' files. Git knows they exists and will be watching them until they are deleted. Since both the bat and the bear are being tracked, we can use <span class='bg'>git commit -am 'message here'</span> to immediately commit changes in tracked files. Try it out! Make sure to run <span class='bg'>git log</span> to check the history!</p>"
       break;
     case 7:
-      gitState.step='7.haha'
-      gitState.instructions = ''
+      gitState.step='7. Check Me Out!'
+      gitState.instructions = "Uh oh! Seems like we changed our regular cat into a ferocious lion! We need to change it back. We can do this using <span class='bg'>git checkout</span> "
       break;
     default:
       gitState.fileStructure = gitState.fileStructure
