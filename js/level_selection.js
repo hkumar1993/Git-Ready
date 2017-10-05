@@ -9,7 +9,7 @@ export const levelSelection = gitState => {
   })
 
   $('#next-level').click( e => {
-    if(Math.floor(gitState.level) < 5){
+    if(Math.floor(gitState.level) < 7){
       gitState.level = Math.floor(gitState.level)+1
       levelStructure(gitState)
       gitState.render(gitState)
@@ -18,7 +18,7 @@ export const levelSelection = gitState => {
 }
 
 export const nextStep = gitState => {
-  const levels = [1,1.1,2,3,3.1,3.2,4,4.1,5,5.1]
+  const levels = [1,1.1,2,3,3.1,3.2,4,4.1,5,5.1,6,6.1,7]
   if(gitState.level < levels[levels.length - 1]){
     const i = levels.findIndex(level => level === gitState.level)
     gitState.level = levels[i+1]
@@ -28,7 +28,7 @@ export const nextStep = gitState => {
 }
 
 export const prevStep = gitState => {
-  const levels = [1,1.1,2,3,3.1,3.2,4,4.1,5,5.1]
+  const levels = [1,1.1,2,3,3.1,3.2,4,4.1,5,5.1,6,6.1,7]
   if(gitState.level > levels[0]){
     const i = levels.findIndex(level => level === gitState.level)
     gitState.level = levels[i-1]
@@ -109,6 +109,23 @@ export const levelStructure = gitState => {
     case 5.1:
       gitState.instructions =
       "Woah! What are all these numbers? And what is this <span class='bg'>HEAD</span> and <span class='bg'>master</span> business?<p>The <span class='bg'>HEAD</span> acts as a pointer to your latest commit. The numbers act as an ID for your commit, which can be used to refer to specific commits that are not your current HEAD. <span class='bg'>master</span> refers to the branch that the commit came from. You will see in later steps the importance of each of these in more detail.</p><p>Go to the <span class='bg'>next</span> step</p>"
+      break;
+    case 6:
+      gitState.step = "6. State Differences"
+      gitState.instructions =
+      "Before we jump into more advanced skills, lets see one more important command, <span class='bg'>git diff</span><p>There will be times when you make changes in your files, and need to check what changes you made before committing them. Use the <span class='bg'>git diff</span> command to check file differences. Try it yourself!</p>"
+      const newState = Object.assign({},allCommittedAnimals)
+      delete newState['bat']
+      newState['bear'].details = 'panda'
+      gitState.fileStructure = newState
+      break;
+    case 6.1:
+      gitState.instructions =
+      "Great! We can see we changed the bear from being a regular bear to a panda, and removed the bat altogether. Let's commit these changes again. All files in the local repository are  called 'tracked' files. Git knows they exists and will be watching them until they are deleted. Since both the bat and the bear are being tracked, we can use <span class='bg'>git commit -am 'message here'</span> to immediately commit changes in tracked files. Try it out! Make sure to run <span class='bg'>git log</span> to check the history!</p>"
+      break;
+    case 7:
+      gitState.step='7.haha'
+      gitState.instructions = ''
       break;
     default:
       gitState.fileStructure = gitState.fileStructure
