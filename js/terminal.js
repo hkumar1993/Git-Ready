@@ -172,7 +172,9 @@ const gitCommand = gitState => {
         gitState.level = 6.1
       }
       return gitDiff(gitState, command.slice(9))
-    } else  {
+    } else if (command.slice(4,12) === 'checkout') {
+      return gitCheckout(gitState, command.slice(13))
+    } else {
       return `<div class='invalid'>${command} is not valid</div>`
     }
   }
@@ -191,6 +193,24 @@ const logHistory = gitState => {
     return commits
   } else {
     return "<div class='invalid'>No git history</div>"
+  }
+}
+
+const gitCheckout = (gitState, command) => {
+  if(Object.keys(gitState.fileStructure).includes(command.split(' ')[0])){
+    let result = ''
+    command.split(' ').forEach(file => {
+      if(gitState.commitHistory[0].fileStructure[file]){
+        if(file === 'cat' && gitState.level === 7){
+          gitState.level = 7.1
+        }
+        gitState.fileStructure[file] = Object.assign({}, gitState.commitHistory[0].fileStructure[file])
+
+      } else {
+        result += `<div class='invalid'>${file} is not being tracked</div>`
+      }
+    })
+    return result
   }
 }
 
