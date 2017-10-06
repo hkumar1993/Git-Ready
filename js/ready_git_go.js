@@ -7,11 +7,12 @@ $(document).ready(() => {
     initialized: false,
     remote: false,
     branch: {
+      checkout: false,
       name: '',
-      branchStructure: {
+      fileStructure: {
 
       },
-      branchCommitHistory: [],
+      commitHistory: [],
       status: false
     },
     currentCommand: '',
