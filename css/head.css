@@ -1,5 +1,5 @@
 .head{
-  height: 50%;
+  /*height: 40%;*/
 }
 
 h1{
@@ -11,7 +11,11 @@ h1{
 }
 
 .terminal{
-  height: 45%;
+  /*position: absolute;
+  top: 55%;
+  left: 10px;*/
+  /*width: 49%;*/
+  height: 43%;
   font-family: 'Cutive Mono', monospace;
   font-size: 16px;
   background-color: #191919;
@@ -84,9 +88,15 @@ h1{
   color: yellow;
 }
 
+/*.instructions-container{
+  height: 25vh;
+  overflow-y: auto;
+}*/
+
 .level-instructions{
   margin-top: 20px;
   color: white;
+  overflow-y: auto;
 }
 
 #instructions > ul {
