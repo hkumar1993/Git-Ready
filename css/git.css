@@ -14,16 +14,16 @@
   width: 100%;
 }
 
-.repo{
+.half{
   display: flex;
 }
 
-.repo > div {
+.half > div {
   height: 100%;
   width: 50%;
 }
 
-.repo > div.full {
+.half > div.full {
   height: 100%;
   width: 100%;
 }
@@ -37,31 +37,28 @@
   padding: 5px 10px;
 }
 
-.local{
-  margin-right: 5px;
-}
-.remote{
-  margin-left: 5px;
+.half > div{
+  margin: 0 5px;
 }
 
-.directory > ul, .stage > ul, .local > ul, .remote > ul{
+.half > div > ul{
   display: flex;
   flex-flow: row wrap;
 }
-.directory > ul li, .stage > ul li, .local > ul li, .remote > ul li{
+.half > div > ul li{
   width: 10%;
   margin: 5px;
 }
 
-.directory > ul li p, .stage > ul li p, .local > ul li p, .remote > ul li p{
+.half > div > ul li p,{
   text-align: center;
 }
 
-.directory img, .stage img, .local img, .remote img{
+.half > div img{
   width: 100%;
   transition: all 0.2s ease-in-out;
 }
 
-.directory img:hover, .stage img:hover, .local img:hover, .remote img:hover{
+.half > div img:hover{
   transform: scale(1.1);
 }
