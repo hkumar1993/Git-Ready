@@ -1,8 +1,8 @@
 import { levelStructure } from './level_selection'
 
 const render = gitState => {
-  console.log('RENDERING');
-  ['directory','branch','main-stage','branch-stage','local', 'remote'].forEach(point => {
+  console.log('RENDERING', gitState.branch.commitHistory);
+  ['directory','branch','main-stage','branch-repo','local', 'remote'].forEach(point => {
     $(`.${point} > ul`).remove()
     $(`.${point}`).append('<ul></ul>')
   })
@@ -100,6 +100,50 @@ const render = gitState => {
         break;
     }
   })
+  if(gitState.branch.status){
+    Object.keys(gitState.branch.fileStructure).forEach(file => {
+      switch (gitState.branch.fileStructure[file].status) {
+        case 'committed':
+        $('.branch > ul').append(`<li class='committed'><img src='./img/${gitState.branch.fileStructure[file].details}.png'/></li>`)
+        break;
+
+        case 'staged':
+        $('.main-stage > ul').append(`<li class='staged'><img src='./img/${gitState.branch.fileStructure[file].details}.png'/></li>`)
+        $('.branch > ul').append(`<li class='staged'><img src='./img/${gitState.branch.fileStructure[file].details}.png'/></li>`)
+        break;
+
+        case 'new':
+        $('.branch > ul').append(`<li class='new'><img src='./img/${gitState.branch.fileStructure[file].details}.png'/></li>`)
+        break;
+
+        case 'ignored':
+        if(gitState.branch.fileStructure[file].details === 'folder'){
+          $('.branch > ul').append(`<li class='committed'><img src='./img/folder.png'/><p>${file}</p></li>`)
+
+        } else {
+          $('.branch > ul').append(`<li class='committed'><img src='./img/${gitState.branch.fileStructure[file].details}.png'/></li>`)
+        }
+        break;
+
+        case 'editted':
+        $('.branch > ul').append(`<li class='editted'><img src='./img/${gitState.branch.fileStructure[file].details}.png'/></li>`)
+        break;
+      }
+    })
+    if(gitState.branch.commitHistory.length){
+      console.log(gitState.branch.commitHistory[0].fileStructure);
+      Object.keys(gitState.branch.commitHistory[0].fileStructure).forEach(file => {
+        console.log(file);
+        switch (gitState.branch.commitHistory[0].fileStructure[file].status) {
+          case 'committed':
+          $('.branch-repo > ul').append(`<li class='committed'>
+          <img src='./img/${gitState.branch.commitHistory[0].fileStructure[file].details}.png'/>
+          </li>`)
+          break;
+        }
+      })
+    }
+  }
 }
 
 export default render
