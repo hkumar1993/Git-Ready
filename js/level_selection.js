@@ -18,7 +18,7 @@ export const levelSelection = gitState => {
 }
 
 export const nextStep = gitState => {
-  const levels = [1,1.1,2,3,3.1,3.2,4,4.1,5,5.1,6,6.1,7,8,8.1,8.2,8.3,8.4,8.5,9]
+  const levels = [1,1.1,2,3,3.1,3.2,4,4.1,5,5.1,6,6.1,7,8,8.1,8.2,8.3,8.4,8.5,8.6,9]
   if(gitState.level < levels[levels.length - 1]){
     const i = levels.findIndex(level => level === gitState.level)
     gitState.level = levels[i+1]
@@ -28,7 +28,7 @@ export const nextStep = gitState => {
 }
 
 export const prevStep = gitState => {
-  const levels = [1,1.1,2,3,3.1,3.2,4,4.1,5,5.1,6,6.1,7,8,8.1,8.2,8.3,8.4,8.5,9]
+  const levels = [1,1.1,2,3,3.1,3.2,4,4.1,5,5.1,6,6.1,7,8,8.1,8.2,8.3,8.4,8.5,8.6,9]
   if(gitState.level > levels[0]){
     const i = levels.findIndex(level => level === gitState.level)
     gitState.level = levels[i-1]
@@ -149,6 +149,8 @@ export const levelStructure = gitState => {
       gitState.instructions = "Uh oh! Seems like we changed our regular cat into a ferocious lion! We need to change it back. We can do this using <span class='bg'>git checkout filename</span>.<p>This command has many more functions, but for now, lets see what happens.</p><p>Run: <span class='bg'>git checkout cat</span></p>"
       break;
     case 8:
+      gitState.branch.status = false
+      gitState.branch.checkout = false
       gitState.fileStructure = Object.assign({}, {'.git':{status: 'ignored', details: 'folder'}},changedCommitStructure, {
         'bear':{'details': 'panda',
           'status': 'committed'},
@@ -162,6 +164,8 @@ export const levelStructure = gitState => {
           'timeStamp': new Date(),
           'branch': 'master'
         })
+      } else if ( gitState.commitHistory.length > 2){
+        gitState.commitHistory.shift()
       }
       // delete newState7['bat']
       // gitState.fileStructure = newState7
@@ -182,6 +186,8 @@ export const levelStructure = gitState => {
           'timeStamp': new Date(),
           'branch': 'master'
         })
+      } else if ( gitState.commitHistory.length > 2){
+        gitState.commitHistory.shift()
       }
       gitState.branch.status = true
       gitState.branch.name = 'wild'
@@ -202,19 +208,85 @@ export const levelStructure = gitState => {
     case 8.4:
       gitState.branch.fileStructure = Object.assign({}, {'.git':{status: 'ignored', details: 'folder'}},wildAnimals)
       gitState.instructions = "Well, you know the drill, use the skills you've learnt to <ul><li>Check the differences in state</li><li>Add all the files to the staging area</li><li>Commit all those changes</li><li>Log those changes</li></ul>"
+      if(gitState.commitHistory.length < 2){
+        gitState.commitHistory.unshift({
+          'fileStructure': changedCommitStructure,
+          'username': 'user',
+          'message': 'Change bear to panda and remove bat',
+          'id': Math.floor(Math.random() * 1000000),
+          'timeStamp': new Date(),
+          'branch': 'master'
+        })
+      } else if ( gitState.commitHistory.length > 2){
+        gitState.commitHistory.shift()
+      }
       break;
     case 8.5:
+      if(gitState.branch.commitHistory.length < 3){
+        gitState.branch.commitHistory.unshift({
+          'fileStructure': committedWildAnimals,
+          'username': 'user',
+          'message': 'Add all wild animals',
+          'id': Math.floor(Math.random() * 1000000),
+          'timeStamp': new Date(),
+          'branch': 'master'
+        })
+      }
+      if ( gitState.commitHistory.length > 2){
+        gitState.commitHistory.shift()
+      }
       gitState.branch.fileStructure = Object.assign({}, {'.git':{status: 'ignored', details: 'folder'}},committedWildAnimals)
       gitState.instructions = "Great! Now all that's left is to finalize these changes in the master branch. Checkout to master by using <span class='bg'>git checkout master</span>. Now that you are in the master, you need to <span class='bg'>merge</span> the branches together. You can merge branches by using the <span class='bg'>git merge branch-name</span> command. Try it yourself!<p>Use: <span class='bg'>git merge wild</span></p>"
       break;
-    case 8.5:
+    case 8.6:
+      gitState.branch.status = true
+      gitState.branch.name = 'wild'
+      gitState.branch.fileStructure = $.extend(true, {}, gitState.fileStructure)
+      gitState.branch.commitHistory = []
+      Object.values(gitState.commitHistory).forEach(commit => {
+        gitState.branch.commitHistory.push($.extend(true, {}, commit))
+      })
+      if(gitState.branch.commitHistory.length < 3){
+        gitState.branch.commitHistory.unshift({
+          'fileStructure': committedWildAnimals,
+          'username': 'user',
+          'message': 'Add all wild animals',
+          'id': Math.floor(Math.random() * 1000000),
+          'timeStamp': new Date(),
+          'branch': 'master'
+        })
+      }
+      if(gitState.commitHistory.length < 3){
+        gitState.commitHistory.unshift({
+          'fileStructure': committedWildAnimals,
+          'username': 'user',
+          'message': 'Add all wild animals',
+          'id': Math.floor(Math.random() * 1000000),
+          'timeStamp': new Date(),
+          'branch': 'master'
+        })
+      }
+      gitState.step = '8. Branching'
       gitState.branch.fileStructure = Object.assign({}, {'.git':{status: 'ignored', details: 'folder'}},committedWildAnimals)
       gitState.fileStructure = Object.assign({}, {'.git':{status: 'ignored', details: 'folder'}},committedWildAnimals)
       gitState.instructions = "Wow! You are just one step away from learning the basics of git. Just one thing, our environment looks extremely messy. Lets clean this up. We have an extra branch that we do not need anymore. Use the <span class='bg'>git branch -d branch-name</span> command to delete the <span class='bg'>wild</span> branch<p>Use: <span class='bg'>git branch -d wild</span></p>"
       break;
     case 9:
+      gitState.branch.status = false
+      gitState.branch.checkout = false
+      gitState.step = '9. Complete!'
       gitState.fileStructure = Object.assign({}, {'.git':{status: 'ignored', details: 'folder'}},committedWildAnimals)
-      gitState.instructions = "Congratulations! You completed the tutorial! There are hundreds of other git commands, however, now that you know the basics, you are now ready to git going! Have fun coding!<p class='outro'>Git Ready! is a frontend jQuery project developed by <a>Harsh Kumar</a><a>Github</a><a>LinkedIn</a></p>"
+      if(gitState.commitHistory.length < 3){
+        gitState.commitHistory.unshift({
+          'fileStructure': committedWildAnimals,
+          'username': 'user',
+          'message': 'Add all wild animals',
+          'id': Math.floor(Math.random() * 1000000),
+          'timeStamp': new Date(),
+          'branch': 'master'
+        })
+      }
+      gitState.instructions = "Congratulations! You completed the tutorial! There are hundreds of other git commands, however, now that you know the basics, you are now ready to git going! Have fun coding!<p class='outro'>Git Ready! is a frontend jQuery project developed by</p><p class='outro big'>Harsh Kumar</p><p class='outro'><a href='https://github.com/hkumar1993/Git-Ready'>Github</a><a href='linkedin.com/in/hkumar1993/'>LinkedIn</a></p> "
       break;
     default:
       gitState.fileStructure = gitState.fileStructure
