@@ -261,7 +261,6 @@ const logHistory = gitState => {
 
 const gitBranch = (gitState, command) => {
   if(command.slice(0,2) === '-d' || command.slice(0,2) === '-D'){
-    console.log(gitState.branch);
     if(gitState.branch){
       gitState.branch.status = false
       gitState.branch.checkout = false

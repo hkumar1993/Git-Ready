@@ -1,7 +1,6 @@
 import { levelStructure } from './level_selection'
 
 const render = gitState => {
-  console.log('RENDERING', gitState.branch.commitHistory);
   ['directory','branch','main-stage','branch-repo','local', 'remote'].forEach(point => {
     $(`.${point} > ul`).remove()
     $(`.${point}`).append('<ul></ul>')
@@ -131,9 +130,7 @@ const render = gitState => {
       }
     })
     if(gitState.branch.commitHistory.length){
-      console.log(gitState.branch.commitHistory[0].fileStructure);
       Object.keys(gitState.branch.commitHistory[0].fileStructure).forEach(file => {
-        console.log(file);
         switch (gitState.branch.commitHistory[0].fileStructure[file].status) {
           case 'committed':
           $('.branch-repo > ul').append(`<li class='committed'>
