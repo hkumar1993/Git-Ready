@@ -231,7 +231,7 @@ var levelSelection = exports.levelSelection = function levelSelection(gitState) 
   });
 
   $('#next-level').click(function (e) {
-    if (Math.floor(gitState.level) < 7) {
+    if (Math.floor(gitState.level) < 9) {
       gitState.level = Math.floor(gitState.level) + 1;
       levelStructure(gitState);
       gitState.render(gitState);
@@ -240,7 +240,7 @@ var levelSelection = exports.levelSelection = function levelSelection(gitState) 
 };
 
 var nextStep = exports.nextStep = function nextStep(gitState) {
-  var levels = [1, 1.1, 2, 3, 3.1, 3.2, 4, 4.1, 5, 5.1, 6, 6.1, 7, 7.1];
+  var levels = [1, 1.1, 2, 3, 3.1, 3.2, 4, 4.1, 5, 5.1, 6, 6.1, 7, 8, 8.1, 8.2, 8.3, 8.4, 8.5, 8.6, 9];
   if (gitState.level < levels[levels.length - 1]) {
     var i = levels.findIndex(function (level) {
       return level === gitState.level;
@@ -252,7 +252,7 @@ var nextStep = exports.nextStep = function nextStep(gitState) {
 };
 
 var prevStep = exports.prevStep = function prevStep(gitState) {
-  var levels = [1, 1.1, 2, 3, 3.1, 3.2, 4, 4.1, 5, 5.1, 6, 6.1, 7, 7.1];
+  var levels = [1, 1.1, 2, 3, 3.1, 3.2, 4, 4.1, 5, 5.1, 6, 6.1, 7, 8, 8.1, 8.2, 8.3, 8.4, 8.5, 8.6, 9];
   if (gitState.level > levels[0]) {
     var i = levels.findIndex(function (level) {
       return level === gitState.level;
@@ -269,7 +269,7 @@ var levelStructure = exports.levelStructure = function levelStructure(gitState) 
       gitState.initialized = false;
       gitState.remote = false;
       gitState.step = 'Step 1: Initialize';
-      gitState.instructions = "Welcome to <span class='bg'>Ready Git Go!</span>, a game where you learn the basics of git!<p><span class='bg'>Git</span> is a free and open sourced version control system. It is widely used to log changes and collaborate on projects. Let's take a look at the power of git!</p><p>To begin, type <span class='bg'>next</span> in the terminal.</p><br/><p>Hint: Use <span class='bg'>next</span> or <span class='bg'>prev</span> to jump to different steps. User <span class='bg'>clear</span> to clear the terminal </p>";
+      gitState.instructions = "Welcome to <span class='bg'>Git Ready!</span>, a game where you learn the basics of git!<p><span class='bg'>Git</span> is a free and open sourced version control system. It is widely used to log changes and collaborate on projects. Let's take a look at the power of git!</p><p>To begin, type <span class='bg'>next</span> in the terminal.</p><br/><p>Hint: Use <span class='bg'>next</span> or <span class='bg'>prev</span> to jump to different steps. User <span class='bg'>clear</span> to clear the terminal </p>";
       gitState.fileStructure = firstAnimals;
       break;
     case 1.1:
@@ -321,7 +321,8 @@ var levelStructure = exports.levelStructure = function levelStructure(gitState) 
           'username': 'user',
           'message': 'Add all animals',
           'id': Math.floor(Math.random() * 1000000),
-          'timeStamp': new Date()
+          'timeStamp': new Date(),
+          'branch': 'master'
         }];
       }
       break;
@@ -354,7 +355,8 @@ var levelStructure = exports.levelStructure = function levelStructure(gitState) 
           'username': 'user',
           'message': 'Change bear to panda and remove bat',
           'id': Math.floor(Math.random() * 1000000),
-          'timeStamp': new Date()
+          'timeStamp': new Date(),
+          'branch': 'master'
         });
       }
       delete newState7_1['bat'];
@@ -362,8 +364,10 @@ var levelStructure = exports.levelStructure = function levelStructure(gitState) 
       gitState.step = '7. Check Me Out!';
       gitState.instructions = "Uh oh! Seems like we changed our regular cat into a ferocious lion! We need to change it back. We can do this using <span class='bg'>git checkout filename</span>.<p>This command has many more functions, but for now, lets see what happens.</p><p>Run: <span class='bg'>git checkout cat</span></p>";
       break;
-    case 7.1:
-      var newState7 = Object.assign({}, allCommittedAnimals, {
+    case 8:
+      gitState.branch.status = false;
+      gitState.branch.checkout = false;
+      gitState.fileStructure = Object.assign({}, { '.git': { status: 'ignored', details: 'folder' } }, changedCommitStructure, {
         'bear': { 'details': 'panda',
           'status': 'committed' }
       });
@@ -373,13 +377,132 @@ var levelStructure = exports.levelStructure = function levelStructure(gitState) 
           'username': 'user',
           'message': 'Change bear to panda and remove bat',
           'id': Math.floor(Math.random() * 1000000),
-          'timeStamp': new Date()
+          'timeStamp': new Date(),
+          'branch': 'master'
+        });
+      } else if (gitState.commitHistory.length > 2) {
+        gitState.commitHistory.shift();
+      }
+      // delete newState7['bat']
+      // gitState.fileStructure = newState7
+      gitState.step = '8. Branching';
+      gitState.instructions = "Phew! That was a close one. Next time we try something like that let's move it to a different branch. Branching is a powerful use of git, where you can make changes to your files in a safe space that will not affect your master code. You can make a branch by using the <span class='bg'>git branch branch-name</span> command. Lets try branching!<p>Try <span class='bg'>git branch wild</span></p>";
+      break;
+    case 8.1:
+      gitState.fileStructure = Object.assign({}, { '.git': { status: 'ignored', details: 'folder' } }, changedCommitStructure, {
+        'bear': { 'details': 'panda',
+          'status': 'committed' }
+      });
+      if (gitState.commitHistory.length < 2) {
+        gitState.commitHistory.unshift({
+          'fileStructure': changedCommitStructure,
+          'username': 'user',
+          'message': 'Change bear to panda and remove bat',
+          'id': Math.floor(Math.random() * 1000000),
+          'timeStamp': new Date(),
+          'branch': 'master'
+        });
+      } else if (gitState.commitHistory.length > 2) {
+        gitState.commitHistory.shift();
+      }
+      gitState.branch.status = true;
+      gitState.branch.name = 'wild';
+      gitState.branch.fileStructure = $.extend(true, {}, gitState.fileStructure);
+      gitState.branch.commitHistory = [];
+      Object.values(gitState.commitHistory).forEach(function (commit) {
+        gitState.branch.commitHistory.push($.extend(true, {}, commit));
+      });
+      gitState.step = '8. Branching';
+      gitState.instructions = "Congratulations! You just used one of the most powerful tools of git! The power to make branches. Branches are used widely in git, especially in collaborative projects. You can check which branch you currently are on by using <span class='bg'>git branch</span>. Try it yourself!";
+      break;
+    case 8.2:
+      gitState.instructions = "As you probably noticed, we are on the <span class='bg'>master</span> branch. Lets checkout the <span class='bg'>wild</span> branch, using our good old friend <span class='bg'>git checkout</span>. <p>Try: <span class='bg'>git checkout wild</span></p>";
+      break;
+    case 8.3:
+      gitState.instructions = "Great! We are now in the <span class='bg'>wild</span> branch. Not sure ? Check again using <span class='bg'>git branch</span>.<p>Now that we are on the wild branch, we can finally make safe changes. We're going to add more wild animals and remove our domestic animals in the <span class='bg'>next</span> step.</p>";
+      break;
+    case 8.4:
+      gitState.branch.fileStructure = Object.assign({}, { '.git': { status: 'ignored', details: 'folder' } }, wildAnimals);
+      gitState.instructions = "Well, you know the drill, use the skills you've learnt to <ul><li>Check the differences in state</li><li>Add all the files to the staging area</li><li>Commit all those changes</li><li>Log those changes</li></ul>";
+      if (gitState.commitHistory.length < 2) {
+        gitState.commitHistory.unshift({
+          'fileStructure': changedCommitStructure,
+          'username': 'user',
+          'message': 'Change bear to panda and remove bat',
+          'id': Math.floor(Math.random() * 1000000),
+          'timeStamp': new Date(),
+          'branch': 'master'
+        });
+      } else if (gitState.commitHistory.length > 2) {
+        gitState.commitHistory.shift();
+      }
+      break;
+    case 8.5:
+      if (gitState.branch.commitHistory.length < 3) {
+        gitState.branch.commitHistory.unshift({
+          'fileStructure': committedWildAnimals,
+          'username': 'user',
+          'message': 'Add all wild animals',
+          'id': Math.floor(Math.random() * 1000000),
+          'timeStamp': new Date(),
+          'branch': 'master'
         });
       }
-      delete newState7['bat'];
-      gitState.fileStructure = newState7;
-      gitState.step = '7. Check Me Out!';
-      gitState.instructions = "Phew! That was a close one. Next time we try something like that let's move it to a different branch. Branching is a powerful use of git, where you can make changes to your files in a safe space that will not affect your master code. You can make a branch by using the <span class='bg'>git branch branch-name</span> command. Lets try branching!<p>Try <span class='bg'>git branch wild</span></p>";
+      if (gitState.commitHistory.length > 2) {
+        gitState.commitHistory.shift();
+      }
+      gitState.branch.fileStructure = Object.assign({}, { '.git': { status: 'ignored', details: 'folder' } }, committedWildAnimals);
+      gitState.instructions = "Great! Now all that's left is to finalize these changes in the master branch. Checkout to master by using <span class='bg'>git checkout master</span>. Now that you are in the master, you need to <span class='bg'>merge</span> the branches together. You can merge branches by using the <span class='bg'>git merge branch-name</span> command. Try it yourself!<p>Use: <span class='bg'>git merge wild</span></p>";
+      break;
+    case 8.6:
+      gitState.branch.status = true;
+      gitState.branch.name = 'wild';
+      gitState.branch.fileStructure = $.extend(true, {}, gitState.fileStructure);
+      gitState.branch.commitHistory = [];
+      Object.values(gitState.commitHistory).forEach(function (commit) {
+        gitState.branch.commitHistory.push($.extend(true, {}, commit));
+      });
+      if (gitState.branch.commitHistory.length < 3) {
+        gitState.branch.commitHistory.unshift({
+          'fileStructure': committedWildAnimals,
+          'username': 'user',
+          'message': 'Add all wild animals',
+          'id': Math.floor(Math.random() * 1000000),
+          'timeStamp': new Date(),
+          'branch': 'master'
+        });
+      }
+      if (gitState.commitHistory.length < 3) {
+        gitState.commitHistory.unshift({
+          'fileStructure': committedWildAnimals,
+          'username': 'user',
+          'message': 'Add all wild animals',
+          'id': Math.floor(Math.random() * 1000000),
+          'timeStamp': new Date(),
+          'branch': 'master'
+        });
+      }
+      gitState.step = '8. Branching';
+      gitState.branch.fileStructure = Object.assign({}, { '.git': { status: 'ignored', details: 'folder' } }, committedWildAnimals);
+      gitState.fileStructure = Object.assign({}, { '.git': { status: 'ignored', details: 'folder' } }, committedWildAnimals);
+      gitState.instructions = "Wow! You are just one step away from learning the basics of git. Just one thing, our environment looks extremely messy. Lets clean this up. We have an extra branch that we do not need anymore. Use the <span class='bg'>git branch -d branch-name</span> command to delete the <span class='bg'>wild</span> branch<p>Use: <span class='bg'>git branch -d wild</span></p>";
+      break;
+    case 9:
+      gitState.branch.status = false;
+      gitState.branch.checkout = false;
+      gitState.step = '9. Complete!';
+      gitState.fileStructure = Object.assign({}, { '.git': { status: 'ignored', details: 'folder' } }, committedWildAnimals);
+      if (gitState.commitHistory.length < 3) {
+        gitState.commitHistory.unshift({
+          'fileStructure': committedWildAnimals,
+          'username': 'user',
+          'message': 'Add all wild animals',
+          'id': Math.floor(Math.random() * 1000000),
+          'timeStamp': new Date(),
+          'branch': 'master'
+        });
+      }
+      gitState.instructions = "Congratulations! You completed the tutorial! There are hundreds of other git commands, however, now that you know the basics, you are now ready to git going! Have fun coding!<p class='outro'>Git Ready! is a frontend jQuery project developed by</p><p class='outro big'>Harsh Kumar</p><p class='outro'><a href='https://github.com/hkumar1993/Git-Ready'>Github</a><a href='linkedin.com/in/hkumar1993/'>LinkedIn</a></p> ";
       break;
     default:
       gitState.fileStructure = gitState.fileStructure;
@@ -522,6 +645,101 @@ var changedCommitStructure = {
     'status': 'committed',
     'details': 'hedgehog'
   }
+};
+
+var wildAnimals = {
+  'bear': {
+    'status': 'editted',
+    'details': 'bear'
+  },
+  'panda': {
+    'status': 'new',
+    'details': 'panda'
+  },
+  'gorilla': {
+    'status': 'committed',
+    'details': 'gorilla'
+  },
+  'rhino': {
+    'status': 'new',
+    'details': 'rhino'
+  },
+  'lion': {
+    'status': 'new',
+    'details': 'lion'
+  },
+  'tiger': {
+    'status': 'new',
+    'details': 'tiger'
+  },
+  'boar': {
+    'status': 'new',
+    'details': 'boar'
+  },
+  'zebra': {
+    'status': 'new',
+    'details': 'zebra'
+  },
+  'giraffe': {
+    'status': 'new',
+    'details': 'giraffe'
+  },
+  'wolf': {
+    'status': 'new',
+    'details': 'wolf'
+  },
+  'elephant': {
+    'status': 'new',
+    'details': 'elephant'
+  }
+
+};
+var committedWildAnimals = {
+  'bear': {
+    'status': 'committed',
+    'details': 'bear'
+  },
+  'panda': {
+    'status': 'committed',
+    'details': 'panda'
+  },
+  'gorilla': {
+    'status': 'committed',
+    'details': 'gorilla'
+  },
+  'rhino': {
+    'status': 'committed',
+    'details': 'rhino'
+  },
+  'lion': {
+    'status': 'committed',
+    'details': 'lion'
+  },
+  'tiger': {
+    'status': 'committed',
+    'details': 'tiger'
+  },
+  'boar': {
+    'status': 'committed',
+    'details': 'boar'
+  },
+  'zebra': {
+    'status': 'committed',
+    'details': 'zebra'
+  },
+  'giraffe': {
+    'status': 'committed',
+    'details': 'giraffe'
+  },
+  'wolf': {
+    'status': 'committed',
+    'details': 'wolf'
+  },
+  'elephant': {
+    'status': 'committed',
+    'details': 'elephant'
+  }
+
 };
 
 /***/ }),
@@ -956,6 +1174,9 @@ var gitCommand = function gitCommand(gitState) {
       if (gitState.level === 5) {
         gitState.level = 5.1;
       }
+      if (gitState.level === 8.4) {
+        gitState.level = 8.5;
+      }
       return '' + logHistory(structure);
     } else if (command.slice(4, 8) === 'diff') {
       if (gitState.level === 6) {
@@ -964,12 +1185,27 @@ var gitCommand = function gitCommand(gitState) {
       return gitDiff(structure, command.slice(9));
     } else if (command.slice(4, 12) === 'checkout') {
       if (command.slice(13, 16) === 'cat' && gitState.level === 7) {
-        gitState.level = 7.1;
+        gitState.level = 8;
+      }
+      if (command.slice(13, 17) === 'wild' && gitState.level === 8.2) {
+        gitState.level = 8.3;
       }
       return gitCheckout(structure, command.slice(13));
     } else if (command.slice(4, 10) === 'branch') {
+      if (command.slice(11) === 'wild' && gitState.level === 8) {
+        gitState.level = 8.1;
+      }
+      if (command.slice(11) === '' && gitState.level === 8.1) {
+        gitState.level = 8.2;
+      }
+      if (command.slice(11) === '-d wild' && gitState.level === 8.6) {
+        gitState.level = 9;
+      }
       return gitBranch(structure, command.slice(11));
     } else if (command.slice(4, 9) === 'merge') {
+      if (gitState.level === 8.5) {
+        gitState.level = 8.6;
+      }
       return gitMerge(gitState, command.slice(10));
     } else {
       return '<div class=\'invalid\'>' + command + ' is not valid</div>';
@@ -989,7 +1225,7 @@ var gitMerge = function gitMerge(gitState, command) {
       Object.values(gitState.branch.commitHistory).forEach(function (commit) {
         gitState.commitHistory.push($.extend(true, {}, commit));
       });
-      return '<div>merged ' + branch + ' to master</div>';
+      return '<div>merged ' + gitState.name + ' to master</div>';
     }
   } else {
     if (command === 'master') {
@@ -1007,7 +1243,7 @@ var logHistory = function logHistory(gitState) {
   if (gitState.commitHistory.length) {
     var commits = '';
     gitState.commitHistory.forEach(function (commit, index) {
-      commits += '<div class=\'commit-head\'>commit: ' + commit.id + ' ' + (index === 0 ? "<span class='commit-head'>HEAD -> master</span>" : "") + '</div>';
+      commits += '<div class=\'commit-head\'>commit: ' + commit.id + ' ' + (index === 0 ? '<span class=\'commit-head\'>HEAD -> ' + (gitState.branch ? 'master' : gitState.name) + '</span>' : "") + '</div>';
       commits += '<div>Author: ' + commit.username + '</div>';
       commits += '<div>Date: ' + commit.timeStamp + '</div>';
       commits += '<div class=\'commit-message\'>' + commit.message + '</div>';
@@ -1169,6 +1405,11 @@ var commitFiles = function commitFiles(gitState, message) {
       }
     });
     if (Object.keys(commit.fileStructure).length) {
+      if (gitState.branch) {
+        commit.branch = 'master';
+      } else {
+        commit.branch = gitState.name;
+      }
       commit.message = message;
       commit.timeStamp = new Date();
       commit.id = Math.floor(Math.random() * 1000000);
