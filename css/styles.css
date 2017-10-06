@@ -28,11 +28,14 @@ body {
 
 .right{
   width: 50%;
+  display: flex;
 
 }
 
 .window{
   position: relative;
+  border-top: 20px solid rgb(227, 227, 227);
+  box-sizing: border-box;
 }
 
 .window > h6 {

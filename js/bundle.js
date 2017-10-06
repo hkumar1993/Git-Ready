@@ -1218,14 +1218,13 @@ var gitMerge = function gitMerge(gitState, command) {
     return "<div class='invalid'>Did not specify merge branch</div>";
   }
   if (gitState.branch) {
-    // current structure is the main gitState
     if (command === gitState.branch.name) {
       gitState.fileStructure = $.extend(true, {}, gitState.branch.fileStructure);
       gitState.commitHistory = [];
       Object.values(gitState.branch.commitHistory).forEach(function (commit) {
         gitState.commitHistory.push($.extend(true, {}, commit));
       });
-      return '<div>merged ' + gitState.name + ' to master</div>';
+      return '<div>merged ' + gitState.branch.name + ' to master</div>';
     }
   } else {
     if (command === 'master') {
@@ -1235,6 +1234,8 @@ var gitMerge = function gitMerge(gitState, command) {
         gitState.branch.commitHistory.push($.extend(true, {}, commit));
       });
       return '<div>merged master to ' + gitState.name + '</div>';
+    } else {
+      return '<div>Branch does not exist</div>';
     }
   }
 };
@@ -1289,6 +1290,7 @@ var gitBranch = function gitBranch(gitState, command) {
     } else {
       gitState.branch.status = true;
       gitState.branch.name = command;
+      gitState.branch.username = gitState.username;
       gitState.branch.fileStructure = $.extend(true, {}, gitState.fileStructure);
       Object.values(gitState.commitHistory).forEach(function (commit) {
         gitState.branch.commitHistory.push($.extend(true, {}, commit));
@@ -1312,9 +1314,11 @@ var gitCheckout = function gitCheckout(gitState, command) {
   } else if (command === 'master') {
     gitState.checkout = false;
     return '<div>Current Branch: master</div>';
-  } else if (command === gitState.branch.name) {
+  } else if (gitState.branch && command === gitState.branch.name) {
     gitState.branch.checkout = true;
     return '<div>Current Branch: ' + gitState.branch.name + '</div>';
+  } else {
+    return '<div class=\'invalid\'>Branch does not exist</div>';
   }
 };
 
