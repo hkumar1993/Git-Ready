@@ -54,7 +54,10 @@ const executeCommand = gitState => {
   } else if (command === 'clear') {
     $('#terminal-command-list').empty()
   } else if( command.slice(0,2) === 'rm'){
-    $('#terminal-command-list').append(`<div>${rmCommand(gitState)}</div>`)
+    if(command === 'rm -rf .git'){
+      gitState.level = 0
+    }
+    $('#terminal-command-list').append(`<div>${rmCommand(gitState, command)}</div>`)
   } else if ( command === 'next') {
     nextStep(gitState)
   } else if ( command === 'prev') {
@@ -66,26 +69,27 @@ const executeCommand = gitState => {
   gitState.render(gitState)
 }
 
-const rmCommand = gitState => {
-  const command = gitState.currentCommand
+const rmCommand = (gitState, command) => {
+
   if(command.slice(3,11) === '-rf .git'){
     if(gitState.initialized){
       gitState.initialized = false
-      gitState.level = 0
+
       delete gitState.fileStructure[".git"]
       return 'Deleted directory: .git'
     }
   } else if (command.slice(3) === '') {
     return 'nothing specified to delete'
   } else {
-    delete gitState.fileStructure[command.slice(3)]
+    const structure = gitState.branch.status && gitState.branch.checkout ? gitState.branch : gitState
+    delete structure.fileStructure[command.slice(3)]
     return 'deleted file'
   }
 }
 
 const gitCommand = gitState => {
   const command = gitState.currentCommand
-
+  const structure = gitState.branch.status && gitState.branch.checkout ? gitState.branch : gitState
   if(!gitState.initialized){
     if ( command.slice(4,8) === 'init'){
       if(gitState.level === 1.1){
@@ -112,22 +116,31 @@ const gitCommand = gitState => {
         if (gitState.level === 3.2){
           gitState.level = 4
         }
-        return stageFiles(gitState, Object.keys(gitState.fileStructure))
+        return stageFiles(structure, Object.keys(structure.fileStructure))
       } else if (command.slice(8) === '') {
         return "<div class='invalid'>did not select any files to add</div>"
       } else {
-        return stageFiles(gitState, command.slice(8).split(' '))
+        if(command.slice(8,12) === 'bear' && gitState.level === 3 ){
+          gitState.level = 3.1
+        }
+        if(command.slice(8,15) === 'gorilla' && gitState.level === 3.1 ){
+          gitState.level = 3.2
+        }
+        return stageFiles(structure, command.slice(8).split(' '))
       }
     } else if (command.slice(4,10) === 'commit'){
       if( command.slice(11,13) === '-m'){
-        return commitFiles(gitState, command.slice(14))
+        if(gitState.level === 4.1){
+          gitState.level = 5
+        }
+        return commitFiles(structure, command.slice(14))
       } else if ( command.slice(11,14) === '-am' || command.slice(11,16) === '-a -m'){
         if(gitState.commitHistory[0]){
-          stageFiles(gitState, Object.keys(gitState.commitHistory[0].fileStructure))
+          stageFiles(structure, Object.keys(structure.commitHistory[0].fileStructure))
           if (gitState.level === 6.1){
             gitState.level = 7
           }
-          return commitFiles(gitState, command.slice(14))
+          return commitFiles(structure, command.slice(14))
         } else {
           return "<div class='invalid'>no files to commit</div>"
         }
@@ -165,18 +178,49 @@ const gitCommand = gitState => {
       if(gitState.level === 5){
         gitState.level = 5.1
       }
-      return `${logHistory(gitState)}`
+      return `${logHistory(structure)}`
     } else if (command.slice(4,8) === 'diff') {
       if(gitState.level === 6){
         gitState.level = 6.1
       }
-      return gitDiff(gitState, command.slice(9))
+      return gitDiff(structure, command.slice(9))
     } else if (command.slice(4,12) === 'checkout') {
-      return gitCheckout(gitState, command.slice(13))
+      if(command.slice(13,16) === 'cat' && gitState.level === 7){
+        gitState.level = 7.1
+      }
+      return gitCheckout(structure, command.slice(13))
     } else if (command.slice(4,10) === 'branch') {
-      return gitBranch(gitState, command.slice(11))
+      return gitBranch(structure, command.slice(11))
+    } else if (command.slice(4,9) === 'merge') {
+      return gitMerge(gitState, command.slice(10))
     } else {
       return `<div class='invalid'>${command} is not valid</div>`
+    }
+  }
+}
+
+const gitMerge = ( gitState, command ) => {
+  if(command === ''){
+    return "<div class='invalid'>Did not specify merge branch</div>"
+  }
+  if ( gitState.branch ){
+    // current structure is the main gitState
+    if(command === gitState.branch.name) {
+      gitState.fileStructure = $.extend(true, {}, gitState.branch.fileStructure)
+      gitState.commitHistory = []
+      Object.values(gitState.branch.commitHistory).forEach(commit => {
+        gitState.commitHistory.push($.extend(true, {}, commit))
+      })
+      return `<div>merged ${branch} to master</div>`
+    }
+  } else {
+    if( command === 'master'){
+      gitState.fileStructuregitState.branch.fileStructure = $.extend(true, {}, gitState.fileStructure)
+      gitState.branch.commitHistory = []
+      Object.values(gitState.commitHistory).forEach(commit => {
+        gitState.branch.commitHistory.push($.extend(true, {}, commit))
+      })
+      return `<div>merged master to ${gitState.name}</div>`
     }
   }
 }
@@ -199,34 +243,66 @@ const logHistory = gitState => {
 
 const gitBranch = (gitState, command) => {
   if(command.slice(0,2) === '-d' || command.slice(0,2) === '-D'){
-    gitState.branch.status = false
-    return 'deleted branch'
+    console.log(gitState.branch);
+    if(gitState.branch){
+      gitState.branch.status = false
+      gitState.branch.checkout = false
+      gitState.branch.name = ''
+      gitState.branch.fileStructure = {}
+      gitState.branch.commitHistory = []
+      return 'deleted branch'
+    } else {
+      return "<div class='invalid'>You cannot destroy branch unless you are in master branch</div>"
+    }
   } else {
     if(command === ''){
-      return "<div class='invalid'>Must specify branch name</div>"
+      if(gitState.branch){
+        if(gitState.branch.status){
+          if( gitState.branch.checkout){
+            return `<div>master</div><div class='valid'>*${gitState.branch.name}</div>`
+          } else {
+            return `<div class='valid'>*master</div><div>${gitState.branch.name}</div>`
+          }
+        } else {
+          return `<div class='valid'>*master</div><div></div>`
+        }
+      } else {
+        if(gitState.checkout){
+          return `<div>master</div><div class='valid'>*${gitState.name}</div>`
+        } else {
+          return `<div class='valid'>*master</div><div>${gitState.name}</div>`
+        }
+      }
     } else {
       gitState.branch.status = true
       gitState.branch.name = command
+      gitState.branch.fileStructure = $.extend(true, {}, gitState.fileStructure)
+      Object.values(gitState.commitHistory).forEach(commit => {
+        gitState.branch.commitHistory.push($.extend(true, {}, commit))
+      })
       return `created branch ${command}`
     }
   }
 }
+
 
 const gitCheckout = (gitState, command) => {
   if(Object.keys(gitState.fileStructure).includes(command.split(' ')[0])){
     let result = ''
     command.split(' ').forEach(file => {
       if(gitState.commitHistory[0].fileStructure[file]){
-        if(file === 'cat' && gitState.level === 7){
-          gitState.level = 7.1
-        }
         gitState.fileStructure[file] = Object.assign({}, gitState.commitHistory[0].fileStructure[file])
-
       } else {
         result += `<div class='invalid'>${file} is not being tracked</div>`
       }
     })
     return result
+  } else if (command === 'master'){
+    gitState.checkout = false
+    return `<div>Current Branch: master</div>`
+  } else if (command === gitState.branch.name){
+    gitState.branch.checkout = true
+    return `<div>Current Branch: ${gitState.branch.name}</div>`
   }
 }
 
@@ -281,12 +357,7 @@ const stageFiles = (gitState, files) => {
     }
   })
   const staged = Object.keys(gitState.fileStructure).filter(file => gitState.fileStructure[file].status === 'staged' )
-  if(files[0] === 'bear' && files.length === 1 && gitState.level === 3 ){
-    gitState.level = 3.1
-  }
-  if(files[0] === 'gorilla' && files.length === 1 && gitState.level === 3.1 ){
-    gitState.level = 3.2
-  }
+
   if(staged.length){
     if(missing.length){
       return 'Some files were not staged'
@@ -324,10 +395,7 @@ const commitFiles = (gitState, message) => {
       commit.id = Math.floor(Math.random() * 1000000)
       commit.username = gitState.username
       gitState.commitHistory.unshift(Object.assign({}, commit))
-      console.log(gitState.level);
-      if(gitState.level === 4.1){
-        gitState.level = 5
-      }
+
       return 'files committed'
     } else {
       return "<div class='invalid'>nothing to commit</div>"
