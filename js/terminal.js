@@ -178,6 +178,9 @@ const gitCommand = gitState => {
       if(gitState.level === 5){
         gitState.level = 5.1
       }
+      if(gitState.level === 8.4){
+        gitState.level = 8.5
+      }
       return `${logHistory(structure)}`
     } else if (command.slice(4,8) === 'diff') {
       if(gitState.level === 6){
@@ -186,15 +189,27 @@ const gitCommand = gitState => {
       return gitDiff(structure, command.slice(9))
     } else if (command.slice(4,12) === 'checkout') {
       if(command.slice(13,16) === 'cat' && gitState.level === 7){
-        gitState.level = 7.1
+        gitState.level = 8
+      }
+      if(command.slice(13,17) === 'wild' && gitState.level === 8.2){
+        gitState.level = 8.3
       }
       return gitCheckout(structure, command.slice(13))
     } else if (command.slice(4,10) === 'branch') {
-      if(command.slice(11) === 'wild' && gitState.level === 7.1){
-        gitState.level = 7.2
+      if(command.slice(11) === 'wild' && gitState.level === 8){
+        gitState.level = 8.1
+      }
+      if(command.slice(11) === '' && gitState.level === 8.1){
+        gitState.level = 8.2
+      }
+      if(command.slice(11) === '-d wild' && gitState.level === 8.6){
+        gitState.level = 9
       }
       return gitBranch(structure, command.slice(11))
     } else if (command.slice(4,9) === 'merge') {
+      if(gitState.level === 8.5){
+        gitState.level = 8.6
+      }
       return gitMerge(gitState, command.slice(10))
     } else {
       return `<div class='invalid'>${command} is not valid</div>`
