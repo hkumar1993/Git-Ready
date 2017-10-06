@@ -18,7 +18,7 @@ export const levelSelection = gitState => {
 }
 
 export const nextStep = gitState => {
-  const levels = [1,1.1,2,3,3.1,3.2,4,4.1,5,5.1,6,6.1,7]
+  const levels = [1,1.1,2,3,3.1,3.2,4,4.1,5,5.1,6,6.1,7,7.1]
   if(gitState.level < levels[levels.length - 1]){
     const i = levels.findIndex(level => level === gitState.level)
     gitState.level = levels[i+1]
@@ -28,7 +28,7 @@ export const nextStep = gitState => {
 }
 
 export const prevStep = gitState => {
-  const levels = [1,1.1,2,3,3.1,3.2,4,4.1,5,5.1,6,6.1,7]
+  const levels = [1,1.1,2,3,3.1,3.2,4,4.1,5,5.1,6,6.1,7,7.1]
   if(gitState.level > levels[0]){
     const i = levels.findIndex(level => level === gitState.level)
     gitState.level = levels[i-1]
@@ -114,18 +114,56 @@ export const levelStructure = gitState => {
       gitState.step = "6. State Differences"
       gitState.instructions =
       "Before we jump into more advanced skills, lets see one more important command, <span class='bg'>git diff</span><p>There will be times when you make changes in your files, and need to check what changes you made before committing them. Use the <span class='bg'>git diff</span> command to check file differences. Try it yourself!</p>"
-      const newState = Object.assign({},allCommittedAnimals)
-      delete newState['bat']
-      newState['bear'].details = 'panda'
-      gitState.fileStructure = newState
+      const newState6 = Object.assign({},allCommittedAnimals, {
+        'bear':{'details': 'panda',
+          'status': 'editted'}
+      })
+      delete newState6['bat']
+      gitState.fileStructure = newState6
       break;
     case 6.1:
       gitState.instructions =
       "Great! We can see we changed the bear from being a regular bear to a panda, and removed the bat altogether. Let's commit these changes again. All files in the local repository are  called 'tracked' files. Git knows they exists and will be watching them until they are deleted. Since both the bat and the bear are being tracked, we can use <span class='bg'>git commit -am 'message here'</span> to immediately commit changes in tracked files. Try it out! Make sure to run <span class='bg'>git log</span> to check the history!</p>"
       break;
     case 7:
+      const newState7_1 = Object.assign({},allCommittedAnimals, {
+        'bear':{'details': 'panda',
+          'status': 'committed'},
+        'cat':{'details': 'lion',
+          'status': 'editted'}
+      })
+      if(gitState.commitHistory.length < 2){
+        gitState.commitHistory.unshift({
+          'fileStructure': changedCommitStructure,
+          'username': 'user',
+          'message': 'Change bear to panda and remove bat',
+          'id': Math.floor(Math.random() * 1000000),
+          'timeStamp': new Date()
+        })
+      }
+      delete newState7_1['bat']
+      gitState.fileStructure = newState7_1
       gitState.step='7. Check Me Out!'
-      gitState.instructions = "Uh oh! Seems like we changed our regular cat into a ferocious lion! We need to change it back. We can do this using <span class='bg'>git checkout</span> "
+      gitState.instructions = "Uh oh! Seems like we changed our regular cat into a ferocious lion! We need to change it back. We can do this using <span class='bg'>git checkout filename</span>.<p>This command has many more functions, but for now, lets see what happens.</p><p>Run: <span class='bg'>git checkout cat</span></p>"
+      break;
+    case 7.1:
+      const newState7 = Object.assign({},allCommittedAnimals, {
+        'bear':{'details': 'panda',
+          'status': 'committed'},
+      })
+      if(gitState.commitHistory.length < 2){
+        gitState.commitHistory.unshift({
+          'fileStructure': changedCommitStructure,
+          'username': 'user',
+          'message': 'Change bear to panda and remove bat',
+          'id': Math.floor(Math.random() * 1000000),
+          'timeStamp': new Date()
+        })
+      }
+      delete newState7['bat']
+      gitState.fileStructure = newState7
+      gitState.step='7. Check Me Out!'
+      gitState.instructions = "Phew! That was a close one. Next time we try something like that let's move it to a different branch. Branching is a powerful use of git, where you can make changes to your files in a safe space that will not affect your master code. You can make a branch by using the <span class='bg'>git branch branch-name</span> command. Lets try branching!<p>Try <span class='bg'>git branch wild</span></p>"
       break;
     default:
       gitState.fileStructure = gitState.fileStructure
@@ -246,4 +284,26 @@ const allStagedAnimals = Object.assign({}, stagedFirstAnimals, {'cat': {
       'status':'committed',
       'details':'bat'
       }
+  }
+const changedCommitStructure = {
+  'bear': {
+    'status':'committed',
+    'details': 'panda'
+  },
+  'gorilla':{
+    'status':'committed',
+    'details': 'gorilla'
+  },
+  'cat': {
+    'status':'committed',
+    'details':'cat'
+    },
+  'dog': {
+    'status':'committed',
+    'details':'dog'
+    },
+  'hedgehog': {
+    'status':'committed',
+    'details':'hedgehog'
+    }
   }

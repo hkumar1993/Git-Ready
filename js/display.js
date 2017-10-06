@@ -1,7 +1,8 @@
 import { levelStructure } from './level_selection'
 
 const render = gitState => {
-  ['directory','stage','local', 'remote'].forEach(point => {
+  console.log('RENDERING');
+  ['directory','branch','main-stage','branch-stage','local', 'remote'].forEach(point => {
     $(`.${point} > ul`).remove()
     $(`.${point}`).append('<ul></ul>')
   })
@@ -19,12 +20,16 @@ const render = gitState => {
     $('.directory > h6').empty()
     $('.directory > h6').append(`${gitState.username}'s Local Directory`)
   }
+  if(gitState.branch.name!==''){
+    $('.branch > h6').empty()
+    $('.branch > h6').append(`${gitState.branch.name} Branch`)
+  }
 
   if(gitState.initialized){
-    $('.directory').removeClass('full')
+    $('.local-dir').removeClass('full')
     $('.stage, .repo').removeClass('hidden')
   } else {
-    $('.directory').addClass('full')
+    $('.local-dir').addClass('full')
     $('.stage, .repo').addClass('hidden')
   }
 
@@ -35,6 +40,19 @@ const render = gitState => {
     $('.local').addClass('full')
     $('.remote').addClass('hidden')
   }
+
+  if(gitState.branch.status){
+    $('.directory').removeClass('full')
+    $('.local').removeClass('full')
+    $('.branch').removeClass('hidden')
+    $('.branch-repo').removeClass('hidden')
+  } else {
+    $('.directory').addClass('full')
+    $('.local').addClass('full')
+    $('.branch').addClass('hidden')
+    $('.branch-repo').addClass('hidden')
+  }
+
   if(gitState.commitHistory.length){
     Object.keys(gitState.commitHistory[0].fileStructure).forEach(file => {
       switch (gitState.commitHistory[0].fileStructure[file].status) {
@@ -60,7 +78,7 @@ const render = gitState => {
         break;
 
       case 'staged':
-        $('.stage > ul').append(`<li class='staged'><img src='./img/${gitState.fileStructure[file].details}.png'/></li>`)
+        $('.main-stage > ul').append(`<li class='staged'><img src='./img/${gitState.fileStructure[file].details}.png'/></li>`)
         $('.directory > ul').append(`<li class='staged'><img src='./img/${gitState.fileStructure[file].details}.png'/></li>`)
         break;
 

@@ -96,8 +96,6 @@ const gitCommand = gitState => {
         'status': 'ignored',
         'details': 'folder'
       }
-
-
       return 'Initializing local repository'
 
     } else {
@@ -124,15 +122,16 @@ const gitCommand = gitState => {
       if( command.slice(11,13) === '-m'){
         return commitFiles(gitState, command.slice(14))
       } else if ( command.slice(11,14) === '-am' || command.slice(11,16) === '-a -m'){
-        if(gitState.level === 6.1){
-          gitState.level = 7
-        }
         if(gitState.commitHistory[0]){
           stageFiles(gitState, Object.keys(gitState.commitHistory[0].fileStructure))
+          if (gitState.level === 6.1){
+            gitState.level = 7
+          }
           return commitFiles(gitState, command.slice(14))
         } else {
           return "<div class='invalid'>no files to commit</div>"
         }
+
       } else {
         return 'dont forget the -m, you don\'t want to open a text editor to write a simple commit'
       }
@@ -174,6 +173,8 @@ const gitCommand = gitState => {
       return gitDiff(gitState, command.slice(9))
     } else if (command.slice(4,12) === 'checkout') {
       return gitCheckout(gitState, command.slice(13))
+    } else if (command.slice(4,10) === 'branch') {
+      return gitBranch(gitState, command.slice(11))
     } else {
       return `<div class='invalid'>${command} is not valid</div>`
     }
@@ -193,6 +194,21 @@ const logHistory = gitState => {
     return commits
   } else {
     return "<div class='invalid'>No git history</div>"
+  }
+}
+
+const gitBranch = (gitState, command) => {
+  if(command.slice(0,2) === '-d' || command.slice(0,2) === '-D'){
+    gitState.branch.status = false
+    return 'deleted branch'
+  } else {
+    if(command === ''){
+      return "<div class='invalid'>Must specify branch name</div>"
+    } else {
+      gitState.branch.status = true
+      gitState.branch.name = command
+      return `created branch ${command}`
+    }
   }
 }
 

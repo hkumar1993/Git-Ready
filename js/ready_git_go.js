@@ -6,6 +6,14 @@ $(document).ready(() => {
   let gitState = {
     initialized: false,
     remote: false,
+    branch: {
+      name: '',
+      branchStructure: {
+
+      },
+      branchCommitHistory: [],
+      status: false
+    },
     currentCommand: '',
     previousCommands: [],
     fileStructure: {
