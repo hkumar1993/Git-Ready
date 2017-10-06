@@ -190,6 +190,9 @@ const gitCommand = gitState => {
       }
       return gitCheckout(structure, command.slice(13))
     } else if (command.slice(4,10) === 'branch') {
+      if(command.slice(11) === 'wild' && gitState.level === 7.1){
+        gitState.level = 7.2
+      }
       return gitBranch(structure, command.slice(11))
     } else if (command.slice(4,9) === 'merge') {
       return gitMerge(gitState, command.slice(10))
@@ -211,7 +214,7 @@ const gitMerge = ( gitState, command ) => {
       Object.values(gitState.branch.commitHistory).forEach(commit => {
         gitState.commitHistory.push($.extend(true, {}, commit))
       })
-      return `<div>merged ${branch} to master</div>`
+      return `<div>merged ${gitState.name} to master</div>`
     }
   } else {
     if( command === 'master'){
@@ -229,7 +232,7 @@ const logHistory = gitState => {
   if(gitState.commitHistory.length){
     let commits = ''
     gitState.commitHistory.forEach((commit, index) => {
-      commits+=`<div class='commit-head'>commit: ${commit.id} ${index === 0 ? "<span class='commit-head'>HEAD -> master</span>":""}</div>`
+      commits+=`<div class='commit-head'>commit: ${commit.id} ${index === 0 ? `<span class='commit-head'>HEAD -> ${gitState.branch ? 'master' : gitState.name}</span>`:""}</div>`
       commits+=`<div>Author: ${commit.username}</div>`
       commits+=`<div>Date: ${commit.timeStamp}</div>`
       commits+=`<div class='commit-message'>${commit.message}</div>`
@@ -390,6 +393,11 @@ const commitFiles = (gitState, message) => {
       }
     })
     if(Object.keys(commit.fileStructure).length){
+      if(gitState.branch){
+        commit.branch = 'master'
+      } else {
+        commit.branch = gitState.name
+      }
       commit.message = message
       commit.timeStamp = new Date()
       commit.id = Math.floor(Math.random() * 1000000)
