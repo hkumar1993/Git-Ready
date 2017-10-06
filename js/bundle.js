@@ -268,7 +268,7 @@ var levelStructure = exports.levelStructure = function levelStructure(gitState) 
     case 1:
       gitState.initialized = false;
       gitState.remote = false;
-      gitState.step = 'Step 1: Initialize';
+      gitState.step = "<span>Step 1: Initialize</span><span>(1/9)</span>";
       gitState.instructions = "Welcome to <span class='bg'>Git Ready!</span>, a game where you learn the basics of git!<p><span class='bg'>Git</span> is a free and open sourced version control system. It is widely used to log changes and collaborate on projects. Let's take a look at the power of git!</p><p>To begin, type <span class='bg'>next</span> in the terminal.</p><br/><p>Hint: Use <span class='bg'>next</span> or <span class='bg'>prev</span> to jump to different steps. User <span class='bg'>clear</span> to clear the terminal </p>";
       gitState.fileStructure = firstAnimals;
       break;
@@ -276,20 +276,20 @@ var levelStructure = exports.levelStructure = function levelStructure(gitState) 
       gitState.fileStructure = firstAnimals;
       gitState.initialized = false;
       gitState.remote = false;
-      gitState.step = 'Step 1: Initialize';
+      gitState.step = "<span>Step 1: Initialize</span><span>(1/9)</span>";
       gitState.instructions = "To use git in your project, run the command: <span class='bg'>git init</span> in the terminal</p><p>This initalizes git, and installs a <span class='bg'>.git</span> folder in your project. This folder holds all the information on your project. Although you will not need to interact with this folder directly, keep in mind, if you delete this folder, you delete git.</p><p>Initialize git now, run the command above and see what happens.</p>";
       break;
     case 2:
       gitState.initialized = true;
       // gitState.remote = false;
-      gitState.step = 'Step 2: Who are you?';
+      gitState.step = "<span>Step 2: Who are you?</span><span>(2/9)</span>";
       gitState.instructions = "Congratulations! You just set up your first git repository! Now you can  make changes to your project and log them as you go. But wait! The computer does not know who you are, we don't want to log all your changes anonymously.<p>We need to configure git to know who you are.</p> <p>Type: <span class='bg'>git config user.name 'your name here'</span> to tell the computer who you are. Don't forget the quotes!</p>";
       gitState.fileStructure = gitFirstAnimals;
       break;
     case 3:
       // gitState.initialized = true;
       // gitState.remote = false;
-      gitState.step = 'Step 3: Adding files';
+      gitState.step = "<span>Step 3: Adding files</span><span>(3/9)</span>";
       gitState.instructions = "When creating a log of your files, git needs to know exactly what files you want to log. You can log files one-by-one, in groups, or all at once. You do this by using the <span class='bg'>git add</span> command. Lets try adding just one file. Tell git to add the <span class='bg'>bear</span><p>Type: <span class='bg'>git add bear</span></p>";
       gitState.fileStructure = gitFirstAnimals;
       break;
@@ -302,7 +302,7 @@ var levelStructure = exports.levelStructure = function levelStructure(gitState) 
       break;
     case 4:
       gitState.commitHistory = [];
-      gitState.step = 'Step 4: Commit files';
+      gitState.step = "<span>Step 4: Commit files</span><span>(4/9)</span>";
       gitState.instructions = "Great! You've staged all the files. Staging files is the equivalent of saying you've prepared the files to be logged, or in git terms, <span class='bg'>committed</span>.<p>You do not always need to stage all the files to commit, in fact, its best to break up your <span class='bg'>commits</span> into groups.</p><p>Type <span class='bg'>next</span> to learn how to commit.</p>";
       gitState.fileStructure = allStagedAnimals;
       break;
@@ -312,7 +312,7 @@ var levelStructure = exports.levelStructure = function levelStructure(gitState) 
       gitState.commitHistory = [];
       break;
     case 5:
-      gitState.step = 'Step 5: The History';
+      gitState.step = "<span>Step 5: The History</span><span>(5/9)</span>";
       gitState.instructions = "Congratulations! You just committed your first set of files! A record of your files is stored in what is known as a <span class='bg'>repository</span>. The repository displays the most current commit. Your history of all your commits can be seen by using <span class='bg'>git log</span>.<p>Try that now, use <span class='bg'>git log</span> to see your commit history</p>";
       gitState.fileStructure = allCommittedAnimals;
       if (!gitState.commitHistory.length) {
@@ -330,7 +330,7 @@ var levelStructure = exports.levelStructure = function levelStructure(gitState) 
       gitState.instructions = "Woah! What are all these numbers? And what is this <span class='bg'>HEAD</span> and <span class='bg'>master</span> business?<p>The <span class='bg'>HEAD</span> acts as a pointer to your latest commit. The numbers act as an ID for your commit, which can be used to refer to specific commits that are not your current HEAD. <span class='bg'>master</span> refers to the branch that the commit came from. You will see in later steps the importance of each of these in more detail.</p><p>Go to the <span class='bg'>next</span> step</p>";
       break;
     case 6:
-      gitState.step = "6. State Differences";
+      gitState.step = "<span>6. State Differences</span><span>(6/9)</span>";
       gitState.instructions = "Before we jump into more advanced skills, lets see one more important command, <span class='bg'>git diff</span><p>There will be times when you make changes in your files, and need to check what changes you made before committing them. Use the <span class='bg'>git diff</span> command to check file differences. Try it yourself!</p>";
       var newState6 = Object.assign({}, allCommittedAnimals, {
         'bear': { 'details': 'panda',
@@ -361,7 +361,7 @@ var levelStructure = exports.levelStructure = function levelStructure(gitState) 
       }
       delete newState7_1['bat'];
       gitState.fileStructure = newState7_1;
-      gitState.step = '7. Check Me Out!';
+      gitState.step = "<span>Step 7. Check Me Out!</span><span>(7/9)</span>";
       gitState.instructions = "Uh oh! Seems like we changed our regular cat into a ferocious lion! We need to change it back. We can do this using <span class='bg'>git checkout filename</span>.<p>This command has many more functions, but for now, lets see what happens.</p><p>Run: <span class='bg'>git checkout cat</span></p>";
       break;
     case 8:
@@ -385,7 +385,7 @@ var levelStructure = exports.levelStructure = function levelStructure(gitState) 
       }
       // delete newState7['bat']
       // gitState.fileStructure = newState7
-      gitState.step = '8. Branching';
+      gitState.step = "<span>Step 8. Branching</span><span>(8/9)</span>";
       gitState.instructions = "Phew! That was a close one. Next time we try something like that let's move it to a different branch. Branching is a powerful use of git, where you can make changes to your files in a safe space that will not affect your master code. You can make a branch by using the <span class='bg'>git branch branch-name</span> command. Lets try branching!<p>Try <span class='bg'>git branch wild</span></p>";
       break;
     case 8.1:
@@ -412,7 +412,7 @@ var levelStructure = exports.levelStructure = function levelStructure(gitState) 
       Object.values(gitState.commitHistory).forEach(function (commit) {
         gitState.branch.commitHistory.push($.extend(true, {}, commit));
       });
-      gitState.step = '8. Branching';
+      gitState.step = "<span>Step 8. Branching</span><span>(8/9)</span>";
       gitState.instructions = "Congratulations! You just used one of the most powerful tools of git! The power to make branches. Branches are used widely in git, especially in collaborative projects. You can check which branch you currently are on by using <span class='bg'>git branch</span>. Try it yourself!";
       break;
     case 8.2:
@@ -482,7 +482,7 @@ var levelStructure = exports.levelStructure = function levelStructure(gitState) 
           'branch': 'master'
         });
       }
-      gitState.step = '8. Branching';
+      gitState.step = "<span>Step 8. Branching</span><span>(8/9)</span>";
       gitState.branch.fileStructure = Object.assign({}, { '.git': { status: 'ignored', details: 'folder' } }, committedWildAnimals);
       gitState.fileStructure = Object.assign({}, { '.git': { status: 'ignored', details: 'folder' } }, committedWildAnimals);
       gitState.instructions = "Wow! You are just one step away from learning the basics of git. Just one thing, our environment looks extremely messy. Lets clean this up. We have an extra branch that we do not need anymore. Use the <span class='bg'>git branch -d branch-name</span> command to delete the <span class='bg'>wild</span> branch<p>Use: <span class='bg'>git branch -d wild</span></p>";
@@ -490,7 +490,7 @@ var levelStructure = exports.levelStructure = function levelStructure(gitState) 
     case 9:
       gitState.branch.status = false;
       gitState.branch.checkout = false;
-      gitState.step = '9. Complete!';
+      gitState.step = "<span>Step 9. Complete!</span><span>(9/9)</span>";
       gitState.fileStructure = Object.assign({}, { '.git': { status: 'ignored', details: 'folder' } }, committedWildAnimals);
       if (gitState.commitHistory.length < 3) {
         gitState.commitHistory.unshift({
