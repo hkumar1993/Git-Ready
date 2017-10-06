@@ -502,7 +502,7 @@ var levelStructure = exports.levelStructure = function levelStructure(gitState) 
           'branch': 'master'
         });
       }
-      gitState.instructions = "Congratulations! You completed the tutorial! There are hundreds of other git commands, however, now that you know the basics, you are now ready to git going! Have fun coding!<p class='outro'>Git Ready! is a frontend jQuery project developed by</p><p class='outro big'>Harsh Kumar</p><p class='outro'><a href='https://github.com/hkumar1993/Git-Ready'>Github</a><a href='linkedin.com/in/hkumar1993/'>LinkedIn</a></p> ";
+      gitState.instructions = "Congratulations! You completed the tutorial! There are hundreds of other git commands, however, now that you know the basics, you are now ready to git going! Have fun coding!<p class='outro'>Git Ready! is a frontend jQuery project developed by</p><p class='outro big'>Harsh Kumar</p><p class='outro'><a href='https://github.com/hkumar1993/Git-Ready'>Github</a><a href='https://linkedin.com/in/hkumar1993/'>LinkedIn</a></p> ";
       break;
     default:
       gitState.fileStructure = gitState.fileStructure;
