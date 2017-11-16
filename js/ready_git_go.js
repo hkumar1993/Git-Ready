@@ -29,6 +29,10 @@ $(document).ready(() => {
     instructions: '',
     username: ''
   }
+  if(gitState.level === 1){
+    $('#terminal-command-list').append(`<div class='valid'>Type "next" to begin ...</div>`)
+    $('#terminal-command-list').append(`<div class='valid'>Type "about" to learn more about the developer ...</div>`)
+  }
   levelStructure(gitState)
   gitState.render(gitState)
   levelSelection(gitState)

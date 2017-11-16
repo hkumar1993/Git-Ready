@@ -44,7 +44,7 @@ export const levelStructure = gitState => {
       gitState.remote = false
       gitState.step = "<span>Step 1: Initialize</span><span>(1/9)</span>"
       gitState.instructions =
-      "Welcome to <span class='bg'>Git Ready!</span>, a game where you learn the basics of git!<p><span class='bg'>Git</span> is a free and open sourced version control system. It is widely used to log changes and collaborate on projects. Let's take a look at the power of git!</p><p>To begin, type <span class='bg'>next</span> in the terminal.</p><br/><p>Hint: Use <span class='bg'>next</span> or <span class='bg'>prev</span> to jump to different steps. User <span class='bg'>clear</span> to clear the terminal </p>"
+      "Welcome to <span class='bg'>Git Ready!</span>, a game where you learn the basics of git!<p><span class='bg'>Git</span> is a free and open sourced version control system. It is widely used to log changes and collaborate on projects. Let's take a look at the power of git!</p><br/><p>Hint: Use <span class='bg'>next</span> or <span class='bg'>prev</span> to jump to different steps. User <span class='bg'>clear</span> to clear the terminal </p>"
       gitState.fileStructure = firstAnimals
       break;
     case 1.1:
@@ -286,7 +286,7 @@ export const levelStructure = gitState => {
           'branch': 'master'
         })
       }
-      gitState.instructions = "Congratulations! You completed the tutorial! There are hundreds of other git commands, however, now that you know the basics, you are now ready to git going! Have fun coding!<p class='outro'>Git Ready! is a frontend jQuery project developed by</p><p class='outro big'>Harsh Kumar</p><p class='outro'><a href='https://github.com/hkumar1993/Git-Ready'>Github</a><a href='https://linkedin.com/in/hkumar1993/'>LinkedIn</a></p> "
+      gitState.instructions = "Congratulations! You completed the tutorial! There are hundreds of other git commands, however, now that you know the basics, you are now ready to git going! Have fun coding!<p class='outro'>Git Ready! is a frontend jQuery project developed by</p><p class='outro big'>Harsh Kumar</p><p class='outro'><a target='blank' href='http://www.hkumar.me'>Portfolio</a><a target='blank' href='https://github.com/hkumar1993/Git-Ready'>Github</a><a target='blank' href='https://linkedin.com/in/hkumar1993/'>LinkedIn</a></p> "
       break;
     default:
       gitState.fileStructure = gitState.fileStructure
