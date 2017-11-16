@@ -62,6 +62,13 @@ const executeCommand = gitState => {
     nextStep(gitState)
   } else if ( command === 'prev') {
     prevStep(gitState)
+  } else if ( command === 'about'){
+    $('#terminal-command-list').empty().
+      append(`<div class='valid'>Harsh Kumar - Software Engineer - San Francisco</div>`).
+      append(`<div class='valid'>Portfolio - <a target="_blank'" href='http://www.hkumar.me'>hkumar.me</a></div>`).
+      append(`<div class='valid'>LinkedIn - <a target="_blank'" href='https://linkedin.com/in/hkumar1993'>@hkumar1993</a></div>`).
+      append(`<div class='valid'>Github - <a target="_blank'" href='https://github.com/hkumar1993'>@hkumar1993</a></div>`)
+
   } else {
     $('#terminal-command-list').
       append(`<div class='invalid'>${command} is not a valid function </div>`)
