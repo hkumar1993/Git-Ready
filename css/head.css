@@ -85,6 +85,10 @@ h1{
   color: #13c24f;
 }
 
+#terminal-command-list div.valid a{
+  color: red;
+}
+
 #terminal-command-list div.commit-head{
   color: yellow;
 }
