@@ -269,7 +269,7 @@ var levelStructure = exports.levelStructure = function levelStructure(gitState) 
       gitState.initialized = false;
       gitState.remote = false;
       gitState.step = "<span>Step 1: Initialize</span><span>(1/9)</span>";
-      gitState.instructions = "Welcome to <span class='bg'>Git Ready!</span>, a game where you learn the basics of git!<p><span class='bg'>Git</span> is a free and open sourced version control system. It is widely used to log changes and collaborate on projects. Let's take a look at the power of git!</p><p>To begin, type <span class='bg'>next</span> in the terminal.</p><br/><p>Hint: Use <span class='bg'>next</span> or <span class='bg'>prev</span> to jump to different steps. User <span class='bg'>clear</span> to clear the terminal </p>";
+      gitState.instructions = "Welcome to <span class='bg'>Git Ready!</span>, a game where you learn the basics of git!<p><span class='bg'>Git</span> is a free and open sourced version control system. It is widely used to log changes and collaborate on projects. Let's take a look at the power of git!</p><br/><p>Hint: Use <span class='bg'>next</span> or <span class='bg'>prev</span> to jump to different steps. User <span class='bg'>clear</span> to clear the terminal </p>";
       gitState.fileStructure = firstAnimals;
       break;
     case 1.1:
@@ -502,7 +502,7 @@ var levelStructure = exports.levelStructure = function levelStructure(gitState) 
           'branch': 'master'
         });
       }
-      gitState.instructions = "Congratulations! You completed the tutorial! There are hundreds of other git commands, however, now that you know the basics, you are now ready to git going! Have fun coding!<p class='outro'>Git Ready! is a frontend jQuery project developed by</p><p class='outro big'>Harsh Kumar</p><p class='outro'><a href='https://github.com/hkumar1993/Git-Ready'>Github</a><a href='https://linkedin.com/in/hkumar1993/'>LinkedIn</a></p> ";
+      gitState.instructions = "Congratulations! You completed the tutorial! There are hundreds of other git commands, however, now that you know the basics, you are now ready to git going! Have fun coding!<p class='outro'>Git Ready! is a frontend jQuery project developed by</p><p class='outro big'>Harsh Kumar</p><p class='outro'><a target='blank' href='http://www.hkumar.me'>Portfolio</a><a target='blank' href='https://github.com/hkumar1993/Git-Ready'>Github</a><a target='blank' href='https://linkedin.com/in/hkumar1993/'>LinkedIn</a></p> ";
       break;
     default:
       gitState.fileStructure = gitState.fileStructure;
@@ -977,6 +977,10 @@ $(document).ready(function () {
     instructions: '',
     username: ''
   };
+  if (gitState.level === 1) {
+    $('#terminal-command-list').append('<div class=\'valid\'>Type "next" to begin ...</div>');
+    $('#terminal-command-list').append('<div class=\'valid\'>Type "about" to learn more about the developer ...</div>');
+  }
   (0, _level_selection.levelStructure)(gitState);
   gitState.render(gitState);
   (0, _level_selection.levelSelection)(gitState);
@@ -1062,6 +1066,8 @@ var executeCommand = function executeCommand(gitState) {
     (0, _level_selection.nextStep)(gitState);
   } else if (command === 'prev') {
     (0, _level_selection.prevStep)(gitState);
+  } else if (command === 'about') {
+    $('#terminal-command-list').empty().append('<div class=\'valid\'>Harsh Kumar - Software Engineer - San Francisco</div>').append('<div class=\'valid\'>Portfolio - <a target="_blank\'" href=\'http://www.hkumar.me\'>hkumar.me</a></div>').append('<div class=\'valid\'>LinkedIn - <a target="_blank\'" href=\'https://linkedin.com/in/hkumar1993\'>@hkumar1993</a></div>').append('<div class=\'valid\'>Github - <a target="_blank\'" href=\'https://github.com/hkumar1993\'>@hkumar1993</a></div>');
   } else {
     $('#terminal-command-list').append('<div class=\'invalid\'>' + command + ' is not a valid function </div>');
   }
