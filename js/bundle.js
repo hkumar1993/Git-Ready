@@ -1010,6 +1010,25 @@ var _level_selection = __webpack_require__(7);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+var terminalResult = {
+  'git': {},
+  'rm': rmCommand
+};
+
+function findCommand(term, command) {
+  command = command.split(' ');
+  var currentCommand = void 0;
+  currentCommand = term[command.shift()];
+  if (!currentCommand) {
+    console.log('no result');
+    return null;
+  }
+  if (typeof currentCommand !== 'function') {
+    return findCommand(currentCommand, command.join(' '));
+  }
+  return currentCommand;
+}
+
 var terminal = function terminal(gitState) {
   window.gitState = gitState;
   $('#command-input').focus();
@@ -1053,6 +1072,16 @@ var terminal = function terminal(gitState) {
 var executeCommand = function executeCommand(gitState) {
 
   var command = gitState.currentCommand;
+  var splitCommand = command.split(' ');
+  var currentCommand = void 0;
+  while (typeof currentCommand !== 'function') {
+    currentCommand = terminalResult[splitCommand.shift()];
+    if (!currentCommand) {
+      console.log('incorrect');
+    }
+  }
+  console.log(currentCommand);
+
   if (command.slice(0, 3) === 'git') {
     $('#terminal-command-list').append('<div>' + gitCommand(gitState) + '</div>');
   } else if (command === 'clear') {

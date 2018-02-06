@@ -1,6 +1,28 @@
 import _ from 'lodash'
 import union from 'lodash/union'
 
+
+const terminalResult = {
+  'git':{
+    
+  },
+  'rm': rmCommand
+}
+
+function findCommand(term, command) {
+  command = command.split(' ')
+  let currentCommand
+  currentCommand = term[command.shift()]
+  if (!currentCommand) {
+    console.log('no result')
+    return null;
+  }
+  if (typeof currentCommand !== 'function') {
+    return findCommand(currentCommand, command.join(' '))
+  }
+  return currentCommand
+}
+
 const terminal = gitState => {
   window.gitState = gitState
   $('#command-input').focus()
@@ -49,6 +71,16 @@ import { nextStep, prevStep } from './level_selection'
 const executeCommand = gitState => {
 
   const command = gitState.currentCommand
+  let splitCommand = command.split(' ')
+  let currentCommand
+  while (typeof currentCommand !== 'function'){
+    currentCommand = terminalResult[splitCommand.shift()]
+    if(!currentCommand){
+      console.log('incorrect')
+    }
+  }
+  console.log(currentCommand)
+
   if (command.slice(0,3) === 'git'){
     $('#terminal-command-list').append(`<div>${gitCommand(gitState)}</div>`)
   } else if (command === 'clear') {
