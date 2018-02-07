@@ -1,12 +1,23 @@
 import _ from 'lodash'
 import union from 'lodash/union'
 
-const terminal = gitState => {
+export default function terminal(gitState) {
   window.gitState = gitState
-  $('#command-input').focus()
-  $('.terminal').click(() => {
-    $('#command-input').focus()
+  const terminal = document.querySelector('.terminal')
+  const commandInput = document.querySelector('#command-input')
+
+  commandInput.focus()
+  
+  terminal.addEventListener('click', function(){
+    commandInput.focus();
+  });
+  
+  commandInput.addEventListener('keyup', function(e){
+    if(e.which === 13){
+      
+    }
   })
+
   $('#command-input').keyup( e => {
     if(e.which === 13){
       gitState.terminalCount = 0
@@ -435,5 +446,3 @@ const commitFiles = (gitState, message) => {
     }
   }
 }
-
-export default terminal
