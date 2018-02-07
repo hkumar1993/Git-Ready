@@ -36,9 +36,9 @@ function writeToTerminal(inputElement) {
   // inputElement.classList.add('hidden')
 
   listElement.innerText = inputElement.value
+  inputElement.value = ''
   termCmdList.appendChild(listElement)
   termCmdList.scrollTop += listElement.scrollHeight
-  
 }
   // $('#command-input').keyup( e => {
   //   if(e.which === 13){
