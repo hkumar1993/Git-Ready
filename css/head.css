@@ -70,7 +70,7 @@ h1{
 }
 #terminal-command-list li{
   font-size: 18px;
-  margin: 5px 0;
+  padding: 5px 0;
 }
 
 #terminal-command-list div{

@@ -5,54 +5,76 @@ export default function terminal(gitState) {
   window.gitState = gitState
   const terminal = document.querySelector('.terminal')
   const commandInput = document.querySelector('#command-input')
+  focusOnInput(terminal, commandInput)
+  listenToCommands(commandInput)
+}
 
+function focusOnInput(terminal, commandInput) {
   commandInput.focus()
-  
-  terminal.addEventListener('click', function(){
+  terminal.addEventListener('click', function () {
     commandInput.focus();
   });
-  
-  commandInput.addEventListener('keyup', function(e){
-    if(e.which === 13){
-      
-    }
-  })
+}
 
-  $('#command-input').keyup( e => {
-    if(e.which === 13){
-      gitState.terminalCount = 0
-      $(e.target).addClass('hidden')
-      gitState.currentCommand = e.target.value.trim()
-      if(gitState.currentCommand !== ''){
-        gitState.previousCommands.unshift(gitState.currentCommand)
-      }
-      $('#terminal-command-list').append(`<li>${gitState.currentCommand}</li>`)
-      if(gitState.currentCommand !== ''){
-        executeCommand(gitState)
-      }
-      $('#terminal-command-list').
-      animate({scrollTop: $('#terminal-command-list').
-      prop('scrollHeight')}, 50)
-      e.target.value = ''
-      $(e.target).removeClass('hidden')
-      $('#command-input').focus()
-    } else if (e.which === 38){
-      if(gitState.previousCommands.length){
-        e.target.value = gitState.previousCommands[gitState.terminalCount]
-        if(gitState.terminalCount < gitState.previousCommands.length - 1){
-          gitState.terminalCount++
-        }
-      }
-    } else if (e.which === 40){
-      if(gitState.previousCommands.length){
-        e.target.value = gitState.previousCommands[gitState.terminalCount]
-        if(gitState.terminalCount > 0){
-          gitState.terminalCount--
-        }
-      }
+function listenToCommands(commandInput) {
+  commandInput.addEventListener('keyup', function (e) {
+    const keyPress = e.which
+    if (keyPress === 13) {
+      writeToTerminal(e.target)
+    } else if (keyPress === 38) {
+
+    } else if (keyPress === 40) {
+
     }
   })
 }
+
+function writeToTerminal(inputElement) {
+  const termCmdList = document.querySelector('#terminal-command-list');
+  const listElement = document.createElement('li')
+
+  // inputElement.classList.add('hidden')
+
+  listElement.innerText = inputElement.value
+  termCmdList.appendChild(listElement)
+  termCmdList.scrollTop += listElement.scrollHeight
+  
+}
+  // $('#command-input').keyup( e => {
+  //   if(e.which === 13){
+  //     gitState.terminalCount = 0
+  //     $(e.target).addClass('hidden')
+  //     gitState.currentCommand = e.target.value.trim()
+  //     if(gitState.currentCommand !== ''){
+  //       gitState.previousCommands.unshift(gitState.currentCommand)
+  //     }
+  //     $('#terminal-command-list').append(`<li>${gitState.currentCommand}</li>`)
+  //     if(gitState.currentCommand !== ''){
+  //       executeCommand(gitState)
+  //     }
+  //     $('#terminal-command-list').
+  //     animate({scrollTop: $('#terminal-command-list').
+  //     prop('scrollHeight')}, 50)
+  //     e.target.value = ''
+  //     $(e.target).removeClass('hidden')
+  //     $('#command-input').focus()
+  //   } else 
+  //   if (e.which === 38){
+  //     if(gitState.previousCommands.length){
+  //       e.target.value = gitState.previousCommands[gitState.terminalCount]
+  //       if(gitState.terminalCount < gitState.previousCommands.length - 1){
+  //         gitState.terminalCount++
+  //       }
+  //     }
+  //   } else if (e.which === 40){
+  //     if(gitState.previousCommands.length){
+  //       e.target.value = gitState.previousCommands[gitState.terminalCount]
+  //       if(gitState.terminalCount > 0){
+  //         gitState.terminalCount--
+  //       }
+  //     }
+  //   }
+  // })
 
 import { nextStep, prevStep } from './level_selection'
 
