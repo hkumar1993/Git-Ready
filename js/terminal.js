@@ -20,6 +20,7 @@ function listenToCommands(commandInput) {
   commandInput.addEventListener('keyup', function (e) {
     const keyPress = e.which
     if (keyPress === 13) {
+      const command = e.target.value
       writeToTerminal(e.target)
     } else if (keyPress === 38) {
 
@@ -32,9 +33,6 @@ function listenToCommands(commandInput) {
 function writeToTerminal(inputElement) {
   const termCmdList = document.querySelector('#terminal-command-list');
   const listElement = document.createElement('li')
-
-  // inputElement.classList.add('hidden')
-
   listElement.innerText = inputElement.value
   inputElement.value = ''
   termCmdList.appendChild(listElement)

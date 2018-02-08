@@ -953,7 +953,7 @@ var _display2 = _interopRequireDefault(_display);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-$(document).ready(function () {
+document.addEventListener("DOMContentLoaded", function () {
   var gitState = {
     initialized: false,
     remote: false,
@@ -978,12 +978,14 @@ $(document).ready(function () {
     username: ''
   };
   if (gitState.level === 1) {
-    $('#terminal-command-list').append('<div class=\'valid\'>Type "next" to begin ...</div>');
-    $('#terminal-command-list').append('<div class=\'valid\'>Type "about" to learn more about the developer ...</div>');
+    var termCmdList = document.querySelector('#terminal-command-list');
+    termCmdList.innerHTML += '<div class=\'valid\'>Type "next" to begin ...</div>';
+    termCmdList.innerHTML += '<div class=\'valid\'>Type "about" to learn more about the developer ...</div>';
+    // $('#terminal-command-list').append(`<div class='valid'>Type "about" to learn more about the developer ...</div>`)
   }
-  (0, _level_selection.levelStructure)(gitState);
-  gitState.render(gitState);
-  (0, _level_selection.levelSelection)(gitState);
+  // levelStructure(gitState)
+  // gitState.render(gitState)
+  // levelSelection(gitState)
   (0, _terminal2.default)(gitState);
 });
 
@@ -997,6 +999,7 @@ $(document).ready(function () {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.default = terminal;
 
 var _lodash = __webpack_require__(16);
 
@@ -1010,45 +1013,74 @@ var _level_selection = __webpack_require__(7);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var terminal = function terminal(gitState) {
+function terminal(gitState) {
   window.gitState = gitState;
-  $('#command-input').focus();
-  $('.terminal').click(function () {
-    $('#command-input').focus();
+  var terminal = document.querySelector('.terminal');
+  var commandInput = document.querySelector('#command-input');
+  focusOnInput(terminal, commandInput);
+  listenToCommands(commandInput);
+}
+
+function focusOnInput(terminal, commandInput) {
+  commandInput.focus();
+  terminal.addEventListener('click', function () {
+    commandInput.focus();
   });
-  $('#command-input').keyup(function (e) {
-    if (e.which === 13) {
-      gitState.terminalCount = 0;
-      $(e.target).addClass('hidden');
-      gitState.currentCommand = e.target.value.trim();
-      if (gitState.currentCommand !== '') {
-        gitState.previousCommands.unshift(gitState.currentCommand);
-      }
-      $('#terminal-command-list').append('<li>' + gitState.currentCommand + '</li>');
-      if (gitState.currentCommand !== '') {
-        executeCommand(gitState);
-      }
-      $('#terminal-command-list').animate({ scrollTop: $('#terminal-command-list').prop('scrollHeight') }, 50);
-      e.target.value = '';
-      $(e.target).removeClass('hidden');
-      $('#command-input').focus();
-    } else if (e.which === 38) {
-      if (gitState.previousCommands.length) {
-        e.target.value = gitState.previousCommands[gitState.terminalCount];
-        if (gitState.terminalCount < gitState.previousCommands.length - 1) {
-          gitState.terminalCount++;
-        }
-      }
-    } else if (e.which === 40) {
-      if (gitState.previousCommands.length) {
-        e.target.value = gitState.previousCommands[gitState.terminalCount];
-        if (gitState.terminalCount > 0) {
-          gitState.terminalCount--;
-        }
-      }
-    }
+}
+
+function listenToCommands(commandInput) {
+  commandInput.addEventListener('keyup', function (e) {
+    var keyPress = e.which;
+    if (keyPress === 13) {
+      var command = e.target.value;
+      writeToTerminal(e.target);
+    } else if (keyPress === 38) {} else if (keyPress === 40) {}
   });
-};
+}
+
+function writeToTerminal(inputElement) {
+  var termCmdList = document.querySelector('#terminal-command-list');
+  var listElement = document.createElement('li');
+  listElement.innerText = inputElement.value;
+  inputElement.value = '';
+  termCmdList.appendChild(listElement);
+  termCmdList.scrollTop += listElement.scrollHeight;
+}
+// $('#command-input').keyup( e => {
+//   if(e.which === 13){
+//     gitState.terminalCount = 0
+//     $(e.target).addClass('hidden')
+//     gitState.currentCommand = e.target.value.trim()
+//     if(gitState.currentCommand !== ''){
+//       gitState.previousCommands.unshift(gitState.currentCommand)
+//     }
+//     $('#terminal-command-list').append(`<li>${gitState.currentCommand}</li>`)
+//     if(gitState.currentCommand !== ''){
+//       executeCommand(gitState)
+//     }
+//     $('#terminal-command-list').
+//     animate({scrollTop: $('#terminal-command-list').
+//     prop('scrollHeight')}, 50)
+//     e.target.value = ''
+//     $(e.target).removeClass('hidden')
+//     $('#command-input').focus()
+//   } else 
+//   if (e.which === 38){
+//     if(gitState.previousCommands.length){
+//       e.target.value = gitState.previousCommands[gitState.terminalCount]
+//       if(gitState.terminalCount < gitState.previousCommands.length - 1){
+//         gitState.terminalCount++
+//       }
+//     }
+//   } else if (e.which === 40){
+//     if(gitState.previousCommands.length){
+//       e.target.value = gitState.previousCommands[gitState.terminalCount]
+//       if(gitState.terminalCount > 0){
+//         gitState.terminalCount--
+//       }
+//     }
+//   }
+// })
 
 var executeCommand = function executeCommand(gitState) {
 
@@ -1431,8 +1463,6 @@ var commitFiles = function commitFiles(gitState, message) {
     }
   }
 };
-
-exports.default = terminal;
 
 /***/ }),
 /* 16 */
