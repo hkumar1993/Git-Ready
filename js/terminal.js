@@ -6,7 +6,7 @@ export default function terminal(gitState) {
   const terminal = document.querySelector('.terminal')
   const commandInput = document.querySelector('#command-input')
   focusOnInput(terminal, commandInput)
-  listenToCommands(commandInput)
+  listenToCommands(commandInput, gitState)
 }
 
 // Adds event listeners to terminal element to focus on terminal input
@@ -18,12 +18,12 @@ function focusOnInput(terminal, commandInput) {
 }
 
 // Responds to entries in terminal input
-function listenToCommands(commandInput) {
+function listenToCommands(commandInput, gitState) {
   commandInput.addEventListener('keyup', function (e) {
     const keyPress = e.which
     const targetElement = e.target
     if (keyPress === 13) {
-      executeCommand(targetElement)
+      executeCommand(targetElement, gitState)
     } else if (keyPress === 38) {
 
     } else if (keyPress === 40) {
@@ -33,22 +33,23 @@ function listenToCommands(commandInput) {
 }
 
 // Executes command from terminal input
-function executeCommand(targetElement){
+function executeCommand(targetElement, gitState){
   const command = targetElement.value.trim()
+  gitState.currentCommand = command
   targetElement.value = ''
   writeToTerminal(command)
-  const terminalFunction = findCommand(terminalResult, command)
+  const terminalFunction = findCommand(terminalResult, command, gitState)
   terminalFunction()
   window.terminalFunction = terminalFunction
   console.log(terminalFunction)
 }
 
 // Writes string to terminal
-function writeToTerminal(command, classNames) {
+function writeToTerminal(command, classNames, elementType = 'li') {
   const termCmdList = document.querySelector('#terminal-command-list');
-  const listElement = document.createElement('li')
+  const listElement = document.createElement(elementType)
   if(!!classNames){
-    listElement.classList.add(className.split(' '))
+    listElement.classList.add(classNames.split(' '))
   }
   listElement.innerText = command
   termCmdList.appendChild(listElement)
@@ -56,27 +57,32 @@ function writeToTerminal(command, classNames) {
 }
 
 // Finds command in commandslist object
-function findCommand(term, command) {
+function findCommand(term, command, gitState) {
   command = command.split(' ')
   let currentCommand = {}
   while (typeof currentCommand !== 'function') {
     currentCommand = term[command.shift()]
     if (!currentCommand) {
-      console.log('no result')
-      return null;
+      currentCommand = terminalResult['invalid'];
+      break;
     }
     if (typeof currentCommand !== 'function') {
       term = currentCommand
     }
   }
-  return prepareFunction(currentCommand, command)
+  return prepareFunction(currentCommand, gitState, command)
 }
 
 // Returns function that will automatically execute the function
-function prepareFunction(terminalFunction, remainingArguments){
+function prepareFunction(terminalFunction, gitState, remainingArguments){
   return function(){
-    terminalFunction(...remainingArguments)
+    terminalFunction(gitState, ...remainingArguments)
   }
+}
+
+function invalidCommand(gitState){
+  const currentCommand = gitState.currentCommand
+  writeToTerminal(`-bash: ${currentCommand}: command not found`, 'invalid', 'div')
 }
   // $('#command-input').keyup( e => {
   //   if(e.which === 13){
@@ -512,10 +518,17 @@ const commitFiles = (gitState, message) => {
 
 const terminalResult = {
   'git': {
-    'test': test,
-    '': test
+    'init': test,
+    'add': test,
+    'commit': test,
+    'config': test,
+    'log': test,
+    'diff': test,
+    'checkout': test,
+    'branch': test,
   },
-  'rm': rmCommand
+  'rm': rmCommand,
+  'invalid': invalidCommand
 }
 
 function test(first, ...args){

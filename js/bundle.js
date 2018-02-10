@@ -1019,7 +1019,7 @@ function terminal(gitState) {
   var terminal = document.querySelector('.terminal');
   var commandInput = document.querySelector('#command-input');
   focusOnInput(terminal, commandInput);
-  listenToCommands(commandInput);
+  listenToCommands(commandInput, gitState);
 }
 
 // Adds event listeners to terminal element to focus on terminal input
@@ -1031,22 +1031,23 @@ function focusOnInput(terminal, commandInput) {
 }
 
 // Responds to entries in terminal input
-function listenToCommands(commandInput) {
+function listenToCommands(commandInput, gitState) {
   commandInput.addEventListener('keyup', function (e) {
     var keyPress = e.which;
     var targetElement = e.target;
     if (keyPress === 13) {
-      executeCommand(targetElement);
+      executeCommand(targetElement, gitState);
     } else if (keyPress === 38) {} else if (keyPress === 40) {}
   });
 }
 
 // Executes command from terminal input
-function executeCommand(targetElement) {
+function executeCommand(targetElement, gitState) {
   var command = targetElement.value.trim();
+  gitState.currentCommand = command;
   targetElement.value = '';
   writeToTerminal(command);
-  var terminalFunction = findCommand(terminalResult, command);
+  var terminalFunction = findCommand(terminalResult, command, gitState);
   terminalFunction();
   window.terminalFunction = terminalFunction;
   console.log(terminalFunction);
@@ -1054,10 +1055,12 @@ function executeCommand(targetElement) {
 
 // Writes string to terminal
 function writeToTerminal(command, classNames) {
+  var elementType = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'li';
+
   var termCmdList = document.querySelector('#terminal-command-list');
-  var listElement = document.createElement('li');
+  var listElement = document.createElement(elementType);
   if (!!classNames) {
-    listElement.classList.add(className.split(' '));
+    listElement.classList.add(classNames.split(' '));
   }
   listElement.innerText = command;
   termCmdList.appendChild(listElement);
@@ -1065,27 +1068,32 @@ function writeToTerminal(command, classNames) {
 }
 
 // Finds command in commandslist object
-function findCommand(term, command) {
+function findCommand(term, command, gitState) {
   command = command.split(' ');
   var currentCommand = {};
   while (typeof currentCommand !== 'function') {
     currentCommand = term[command.shift()];
     if (!currentCommand) {
-      console.log('no result');
-      return null;
+      currentCommand = terminalResult['invalid'];
+      break;
     }
     if (typeof currentCommand !== 'function') {
       term = currentCommand;
     }
   }
-  return prepareFunction(currentCommand, command);
+  return prepareFunction(currentCommand, gitState, command);
 }
 
 // Returns function that will automatically execute the function
-function prepareFunction(terminalFunction, remainingArguments) {
+function prepareFunction(terminalFunction, gitState, remainingArguments) {
   return function () {
-    terminalFunction.apply(undefined, _toConsumableArray(remainingArguments));
+    terminalFunction.apply(undefined, [gitState].concat(_toConsumableArray(remainingArguments)));
   };
+}
+
+function invalidCommand(gitState) {
+  var currentCommand = gitState.currentCommand;
+  writeToTerminal('-bash: ' + currentCommand + ': command not found', 'invalid', 'div');
 }
 // $('#command-input').keyup( e => {
 //   if(e.which === 13){
@@ -1509,10 +1517,17 @@ var commitFiles = function commitFiles(gitState, message) {
 
 var terminalResult = {
   'git': {
-    'test': test,
-    '': test
+    'init': test,
+    'add': test,
+    'commit': test,
+    'config': test,
+    'log': test,
+    'diff': test,
+    'checkout': test,
+    'branch': test
   },
-  'rm': rmCommand
+  'rm': rmCommand,
+  'invalid': invalidCommand
 };
 
 function test(first) {
