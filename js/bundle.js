@@ -1013,8 +1013,9 @@ var _level_selection = __webpack_require__(7);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 function terminal(gitState) {
-  window.gitState = gitState;
   var terminal = document.querySelector('.terminal');
   var commandInput = document.querySelector('#command-input');
   focusOnInput(terminal, commandInput);
@@ -1046,6 +1047,7 @@ function executeCommand(targetElement) {
   targetElement.value = '';
   writeToTerminal(command);
   var terminalFunction = findCommand(terminalResult, command);
+  terminalFunction();
   window.terminalFunction = terminalFunction;
   console.log(terminalFunction);
 }
@@ -1062,6 +1064,7 @@ function writeToTerminal(command, classNames) {
   termCmdList.scrollTop += listElement.scrollHeight;
 }
 
+// Finds command in commandslist object
 function findCommand(term, command) {
   command = command.split(' ');
   var currentCommand = {};
@@ -1078,9 +1081,10 @@ function findCommand(term, command) {
   return prepareFunction(currentCommand, command);
 }
 
+// Returns function that will automatically execute the function
 function prepareFunction(terminalFunction, remainingArguments) {
   return function () {
-    terminalFunction(remainingArguments);
+    terminalFunction.apply(undefined, _toConsumableArray(remainingArguments));
   };
 }
 // $('#command-input').keyup( e => {
@@ -1120,48 +1124,30 @@ function prepareFunction(terminalFunction, remainingArguments) {
 // })
 
 
-// import { exec } from 'child_process';
+var executeCommand2 = function executeCommand2(gitState) {
 
+  var command = gitState.currentCommand;
 
-// const executeCommand = gitState => {
-
-//   const command = gitState.currentCommand
-//   let splitCommand = command.split(' ')
-//   let currentCommand
-//   while (typeof currentCommand !== 'function'){
-//     currentCommand = terminalResult[splitCommand.shift()]
-//     if(!currentCommand){
-//       console.log('incorrect')
-//     }
-//   }
-//   console.log(currentCommand)
-
-//   if (command.slice(0,3) === 'git'){
-//     $('#terminal-command-list').append(`<div>${gitCommand(gitState)}</div>`)
-//   } else if (command === 'clear') {
-//     $('#terminal-command-list').empty()
-//   } else if( command.slice(0,2) === 'rm'){
-//     if(command === 'rm -rf .git'){
-//       gitState.level = 0
-//     }
-//     $('#terminal-command-list').append(`<div>${rmCommand(gitState, command)}</div>`)
-//   } else if ( command === 'next') {
-//     nextStep(gitState)
-//   } else if ( command === 'prev') {
-//     prevStep(gitState)
-//   } else if ( command === 'about'){
-//     $('#terminal-command-list').empty().
-//       append(`<div class='valid'>Harsh Kumar - Software Engineer - San Francisco</div>`).
-//       append(`<div class='valid'>Portfolio - <a target="_blank'" href='http://www.hkumar.me'>hkumar.me</a></div>`).
-//       append(`<div class='valid'>LinkedIn - <a target="_blank'" href='https://linkedin.com/in/hkumar1993'>@hkumar1993</a></div>`).
-//       append(`<div class='valid'>Github - <a target="_blank'" href='https://github.com/hkumar1993'>@hkumar1993</a></div>`)
-
-//   } else {
-//     $('#terminal-command-list').
-//       append(`<div class='invalid'>${command} is not a valid function </div>`)
-//   }
-//   gitState.render(gitState)
-// }
+  if (command.slice(0, 3) === 'git') {
+    $('#terminal-command-list').append('<div>' + gitCommand(gitState) + '</div>');
+  } else if (command === 'clear') {
+    $('#terminal-command-list').empty();
+  } else if (command.slice(0, 2) === 'rm') {
+    if (command === 'rm -rf .git') {
+      gitState.level = 0;
+    }
+    $('#terminal-command-list').append('<div>' + rmCommand(gitState, command) + '</div>');
+  } else if (command === 'next') {
+    (0, _level_selection.nextStep)(gitState);
+  } else if (command === 'prev') {
+    (0, _level_selection.prevStep)(gitState);
+  } else if (command === 'about') {
+    $('#terminal-command-list').empty().append('<div class=\'valid\'>Harsh Kumar - Software Engineer - San Francisco</div>').append('<div class=\'valid\'>Portfolio - <a target="_blank\'" href=\'http://www.hkumar.me\'>hkumar.me</a></div>').append('<div class=\'valid\'>LinkedIn - <a target="_blank\'" href=\'https://linkedin.com/in/hkumar1993\'>@hkumar1993</a></div>').append('<div class=\'valid\'>Github - <a target="_blank\'" href=\'https://github.com/hkumar1993\'>@hkumar1993</a></div>');
+  } else {
+    $('#terminal-command-list').append('<div class=\'invalid\'>' + command + ' is not a valid function </div>');
+  }
+  gitState.render(gitState);
+};
 
 var rmCommand = function rmCommand(gitState, command) {
 
@@ -1529,8 +1515,12 @@ var terminalResult = {
   'rm': rmCommand
 };
 
-function test() {
-  console.log('test');
+function test(first) {
+  for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+    args[_key - 1] = arguments[_key];
+  }
+
+  console.log('test', first, args);
 }
 
 /***/ }),

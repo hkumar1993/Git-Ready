@@ -1,8 +1,8 @@
 import _ from 'lodash'
 import union from 'lodash/union'
 
+
 export default function terminal(gitState) {
-  window.gitState = gitState
   const terminal = document.querySelector('.terminal')
   const commandInput = document.querySelector('#command-input')
   focusOnInput(terminal, commandInput)
@@ -38,6 +38,7 @@ function executeCommand(targetElement){
   targetElement.value = ''
   writeToTerminal(command)
   const terminalFunction = findCommand(terminalResult, command)
+  terminalFunction()
   window.terminalFunction = terminalFunction
   console.log(terminalFunction)
 }
@@ -54,6 +55,7 @@ function writeToTerminal(command, classNames) {
   termCmdList.scrollTop += listElement.scrollHeight
 }
 
+// Finds command in commandslist object
 function findCommand(term, command) {
   command = command.split(' ')
   let currentCommand = {}
@@ -70,9 +72,10 @@ function findCommand(term, command) {
   return prepareFunction(currentCommand, command)
 }
 
-function prepareFunction( terminalFunction, remainingArguments){
+// Returns function that will automatically execute the function
+function prepareFunction(terminalFunction, remainingArguments){
   return function(){
-    terminalFunction(remainingArguments)
+    terminalFunction(...remainingArguments)
   }
 }
   // $('#command-input').keyup( e => {
@@ -114,48 +117,38 @@ function prepareFunction( terminalFunction, remainingArguments){
 
 
 import { nextStep, prevStep } from './level_selection'
-// import { exec } from 'child_process';
 
 
-// const executeCommand = gitState => {
+const executeCommand2 = gitState => {
 
-//   const command = gitState.currentCommand
-//   let splitCommand = command.split(' ')
-//   let currentCommand
-//   while (typeof currentCommand !== 'function'){
-//     currentCommand = terminalResult[splitCommand.shift()]
-//     if(!currentCommand){
-//       console.log('incorrect')
-//     }
-//   }
-//   console.log(currentCommand)
+  const command = gitState.currentCommand
 
-//   if (command.slice(0,3) === 'git'){
-//     $('#terminal-command-list').append(`<div>${gitCommand(gitState)}</div>`)
-//   } else if (command === 'clear') {
-//     $('#terminal-command-list').empty()
-//   } else if( command.slice(0,2) === 'rm'){
-//     if(command === 'rm -rf .git'){
-//       gitState.level = 0
-//     }
-//     $('#terminal-command-list').append(`<div>${rmCommand(gitState, command)}</div>`)
-//   } else if ( command === 'next') {
-//     nextStep(gitState)
-//   } else if ( command === 'prev') {
-//     prevStep(gitState)
-//   } else if ( command === 'about'){
-//     $('#terminal-command-list').empty().
-//       append(`<div class='valid'>Harsh Kumar - Software Engineer - San Francisco</div>`).
-//       append(`<div class='valid'>Portfolio - <a target="_blank'" href='http://www.hkumar.me'>hkumar.me</a></div>`).
-//       append(`<div class='valid'>LinkedIn - <a target="_blank'" href='https://linkedin.com/in/hkumar1993'>@hkumar1993</a></div>`).
-//       append(`<div class='valid'>Github - <a target="_blank'" href='https://github.com/hkumar1993'>@hkumar1993</a></div>`)
+  if (command.slice(0,3) === 'git'){
+    $('#terminal-command-list').append(`<div>${gitCommand(gitState)}</div>`)
+  } else if (command === 'clear') {
+    $('#terminal-command-list').empty()
+  } else if( command.slice(0,2) === 'rm'){
+    if(command === 'rm -rf .git'){
+      gitState.level = 0
+    }
+    $('#terminal-command-list').append(`<div>${rmCommand(gitState, command)}</div>`)
+  } else if ( command === 'next') {
+    nextStep(gitState)
+  } else if ( command === 'prev') {
+    prevStep(gitState)
+  } else if ( command === 'about'){
+    $('#terminal-command-list').empty().
+      append(`<div class='valid'>Harsh Kumar - Software Engineer - San Francisco</div>`).
+      append(`<div class='valid'>Portfolio - <a target="_blank'" href='http://www.hkumar.me'>hkumar.me</a></div>`).
+      append(`<div class='valid'>LinkedIn - <a target="_blank'" href='https://linkedin.com/in/hkumar1993'>@hkumar1993</a></div>`).
+      append(`<div class='valid'>Github - <a target="_blank'" href='https://github.com/hkumar1993'>@hkumar1993</a></div>`)
 
-//   } else {
-//     $('#terminal-command-list').
-//       append(`<div class='invalid'>${command} is not a valid function </div>`)
-//   }
-//   gitState.render(gitState)
-// }
+  } else {
+    $('#terminal-command-list').
+      append(`<div class='invalid'>${command} is not a valid function </div>`)
+  }
+  gitState.render(gitState)
+}
 
 const rmCommand = (gitState, command) => {
 
@@ -525,6 +518,6 @@ const terminalResult = {
   'rm': rmCommand
 }
 
-function test(){
-  console.log('test')
+function test(first, ...args){
+  console.log('test', first, args)
 }
