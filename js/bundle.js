@@ -1527,6 +1527,9 @@ var terminalResult = {
     'branch': test
   },
   'rm': rmCommand,
+  'next': _level_selection.nextStep,
+  'prev': _level_selection.prevStep,
+  'about': aboutCommand,
   'invalid': invalidCommand
 };
 

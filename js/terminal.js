@@ -528,6 +528,9 @@ const terminalResult = {
     'branch': test,
   },
   'rm': rmCommand,
+  'next': nextStep,
+  'prev': prevStep,
+  'about': aboutCommand,
   'invalid': invalidCommand
 }
 
