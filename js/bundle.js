@@ -1021,6 +1021,7 @@ function listenToCommands(commandInput, gitState) {
 function executeCommand(targetElement, gitState) {
   var command = targetElement.value.trim();
   gitState.currentCommand = command;
+  if (command !== '') gitState.previousCommands.unshift(command);
   targetElement.value = '';
   writeToTerminal(command);
   var terminalFunction = findCommand(terminalResult, command, gitState);
