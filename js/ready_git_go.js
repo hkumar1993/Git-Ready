@@ -1,39 +1,11 @@
-import terminal from './terminal'
+import terminal, {writeToTerminal} from './terminal'
+import gitState from './store'
 import { levelSelection, levelStructure } from './level_selection'
-import render from './display'
 
 document.addEventListener("DOMContentLoaded", function(){
-  let gitState = {
-    initialized: false,
-    remote: false,
-    branch: {
-      checkout: false,
-      name: '',
-      fileStructure: {
-
-      },
-      commitHistory: [],
-      status: false
-    },
-    currentCommand: '',
-    previousCommands: [],
-    fileStructure: {
-    },
-    terminalCount: 0,
-    level: 1,
-    previousLevel: 1,
-    render,
-    commitHistory: [],
-    commit: '',
-    step: '',
-    instructions: '',
-    username: ''
-  }
   if (gitState.level === 1) {
-    const termCmdList = document.querySelector('#terminal-command-list');
-    termCmdList.innerHTML += `<div class='valid'>Type "next" to begin ...</div>`
-    termCmdList.innerHTML += `<div class='valid'>Type "about" to learn more about the developer ...</div>`
-    // $('#terminal-command-list').append(`<div class='valid'>Type "about" to learn more about the developer ...</div>`)
+    writeToTerminal('Type "next" to begin ...', 'valid', 'div')
+    writeToTerminal('Type "about" to learn more about the developer ...', 'valid', 'div')
   }
   // levelStructure(gitState)
   // gitState.render(gitState)
