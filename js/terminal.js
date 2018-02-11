@@ -45,7 +45,7 @@ function executeCommand(targetElement, gitState){
 }
 
 // Writes string to terminal
-function writeToTerminal(command, classNames, elementType = 'li') {
+export function writeToTerminal(command, classNames, elementType = 'li') {
   const termCmdList = document.querySelector('#terminal-command-list');
   const listElement = document.createElement(elementType)
   if(!!classNames){
@@ -530,7 +530,7 @@ const terminalResult = {
   'rm': rmCommand,
   'next': nextStep,
   'prev': prevStep,
-  'about': aboutCommand,
+  'about': test,
   'invalid': invalidCommand
 }
 
