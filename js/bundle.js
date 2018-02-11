@@ -945,48 +945,23 @@ var _terminal = __webpack_require__(15);
 
 var _terminal2 = _interopRequireDefault(_terminal);
 
+var _store = __webpack_require__(80);
+
+var _store2 = _interopRequireDefault(_store);
+
 var _level_selection = __webpack_require__(7);
-
-var _display = __webpack_require__(79);
-
-var _display2 = _interopRequireDefault(_display);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 document.addEventListener("DOMContentLoaded", function () {
-  var gitState = {
-    initialized: false,
-    remote: false,
-    branch: {
-      checkout: false,
-      name: '',
-      fileStructure: {},
-      commitHistory: [],
-      status: false
-    },
-    currentCommand: '',
-    previousCommands: [],
-    fileStructure: {},
-    terminalCount: 0,
-    level: 1,
-    previousLevel: 1,
-    render: _display2.default,
-    commitHistory: [],
-    commit: '',
-    step: '',
-    instructions: '',
-    username: ''
-  };
-  if (gitState.level === 1) {
-    var termCmdList = document.querySelector('#terminal-command-list');
-    termCmdList.innerHTML += '<div class=\'valid\'>Type "next" to begin ...</div>';
-    termCmdList.innerHTML += '<div class=\'valid\'>Type "about" to learn more about the developer ...</div>';
-    // $('#terminal-command-list').append(`<div class='valid'>Type "about" to learn more about the developer ...</div>`)
+  if (_store2.default.level === 1) {
+    (0, _terminal.writeToTerminal)('Type "next" to begin ...', 'valid', 'div');
+    (0, _terminal.writeToTerminal)('Type "about" to learn more about the developer ...', 'valid', 'div');
   }
   // levelStructure(gitState)
   // gitState.render(gitState)
   // levelSelection(gitState)
-  (0, _terminal2.default)(gitState);
+  (0, _terminal2.default)(_store2.default);
 });
 
 /***/ }),
@@ -1000,6 +975,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = terminal;
+exports.writeToTerminal = writeToTerminal;
 
 var _lodash = __webpack_require__(16);
 
@@ -1529,7 +1505,7 @@ var terminalResult = {
   'rm': rmCommand,
   'next': _level_selection.nextStep,
   'prev': _level_selection.prevStep,
-  'about': aboutCommand,
+  'about': test,
   'invalid': invalidCommand
 };
 
@@ -20603,6 +20579,49 @@ var render = function render(gitState) {
 };
 
 exports.default = render;
+
+/***/ }),
+/* 80 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _display = __webpack_require__(79);
+
+var _display2 = _interopRequireDefault(_display);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var gitState = {
+    initialized: false,
+    remote: false,
+    branch: {
+        checkout: false,
+        name: '',
+        fileStructure: {},
+        commitHistory: [],
+        status: false
+    },
+    currentCommand: '',
+    previousCommands: [],
+    fileStructure: {},
+    terminalCount: 0,
+    level: 1,
+    previousLevel: 1,
+    render: _display2.default,
+    commitHistory: [],
+    commit: '',
+    step: '',
+    instructions: '',
+    username: ''
+};
+
+exports.default = gitState;
 
 /***/ })
 /******/ ]);
