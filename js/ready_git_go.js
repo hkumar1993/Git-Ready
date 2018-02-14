@@ -7,9 +7,9 @@ document.addEventListener("DOMContentLoaded", function(){
     writeToTerminal('Type "next" to begin ...', 'valid', 'div')
     writeToTerminal('Type "about" to learn more about the developer ...', 'valid', 'div')
   }
-  // levelStructure(gitState)
-  // gitState.render(gitState)
-  // levelSelection(gitState)
+  levelStructure(gitState)
+  gitState.render(gitState)
+  levelSelection(gitState)
   terminal(gitState);
 })
 
