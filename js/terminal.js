@@ -3,6 +3,7 @@ import union from 'lodash/union'
 
 
 export default function terminal(gitState) {
+  window.gitState = gitState 
   const terminal = document.querySelector('.terminal')
   const commandInput = document.querySelector('#command-input')
   focusOnInput(terminal, commandInput)
@@ -23,10 +24,12 @@ function listenToCommands(commandInput, gitState) {
     const keyPress = e.which
     const targetElement = e.target
     if (keyPress === 13) {
+      // Execute command on enter
       executeCommand(targetElement, gitState)
     } else if (keyPress === 38) {
-
+      // Go up the command list on up key
     } else if (keyPress === 40) {
+      // Go down the command list on down key
 
     }
   })
@@ -37,55 +40,80 @@ function executeCommand(targetElement, gitState){
   
   const command = targetElement.value.trim()
   gitState.currentCommand = command
-  
+  // Push current command to terminal history
   if(command !== '') gitState.previousCommands.unshift(command)
-  
+
+  // Set terminal count to 0
+  gitState.terminalCount = 0
+
+  // Set value of input to empty string
   targetElement.value = ''
+
+  // Write current command to terminal
   writeToTerminal(command)
+
+  // Find current command
   const terminalFunction = findCommand(terminalResult, command, gitState)
+
+  // Execute current command
   terminalFunction()
-  window.terminalFunction = terminalFunction
-  console.log(terminalFunction)
+  gitState.render(gitState)
 }
 
 // Writes string to terminal
 export function writeToTerminal(command, classNames, elementType = 'li') {
   const termCmdList = document.querySelector('#terminal-command-list');
+  
+  // Create list element
   const listElement = document.createElement(elementType)
+  
   if(!!classNames){
+    // Add class to list element
     listElement.classList.add(classNames.split(' '))
   }
+  // Write inner text for list element
   listElement.innerText = command
+
+  // Add list element to terminal
   termCmdList.appendChild(listElement)
+
+  // Scroll terminal down to current list element
   termCmdList.scrollTop += listElement.scrollHeight
 }
 
 // Finds command in commandslist object
 function findCommand(term, command, gitState) {
+  // split command to individual arguments
   command = command.split(' ')
   let currentCommand = {}
   while (typeof currentCommand !== 'function') {
+    // locate argument in terminal list
     currentCommand = term[command.shift()]
     if (!currentCommand) {
+      // return invalid function
       currentCommand = terminalResult['invalid'];
       break;
     }
+    // if current command is a sub-object, enter object to find function
     if (typeof currentCommand !== 'function') {
       term = currentCommand
     }
   }
+  // prepare function for execution
   return prepareFunction(currentCommand, gitState, command)
 }
 
 // Returns function that will automatically execute the function
 function prepareFunction(terminalFunction, gitState, remainingArguments){
   return function(){
+    // returns closure with gitstate and remaining arguments set
     terminalFunction(gitState, ...remainingArguments)
   }
 }
 
 function invalidCommand(gitState){
   const currentCommand = gitState.currentCommand
+  // write error messages
   writeToTerminal(`-bash: ${currentCommand}: command not found`, 'invalid', 'div')
 }
   // $('#command-input').keyup( e => {

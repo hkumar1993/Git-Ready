@@ -945,7 +945,7 @@ var _terminal = __webpack_require__(15);
 
 var _terminal2 = _interopRequireDefault(_terminal);
 
-var _store = __webpack_require__(80);
+var _store = __webpack_require__(79);
 
 var _store2 = _interopRequireDefault(_store);
 
@@ -958,9 +958,9 @@ document.addEventListener("DOMContentLoaded", function () {
     (0, _terminal.writeToTerminal)('Type "next" to begin ...', 'valid', 'div');
     (0, _terminal.writeToTerminal)('Type "about" to learn more about the developer ...', 'valid', 'div');
   }
-  // levelStructure(gitState)
-  // gitState.render(gitState)
-  // levelSelection(gitState)
+  (0, _level_selection.levelStructure)(_store2.default);
+  _store2.default.render(_store2.default);
+  (0, _level_selection.levelSelection)(_store2.default);
   (0, _terminal2.default)(_store2.default);
 });
 
@@ -992,6 +992,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 function terminal(gitState) {
+  window.gitState = gitState;
   var terminal = document.querySelector('.terminal');
   var commandInput = document.querySelector('#command-input');
   focusOnInput(terminal, commandInput);
@@ -1012,22 +1013,40 @@ function listenToCommands(commandInput, gitState) {
     var keyPress = e.which;
     var targetElement = e.target;
     if (keyPress === 13) {
+      // Execute command on enter
       executeCommand(targetElement, gitState);
-    } else if (keyPress === 38) {} else if (keyPress === 40) {}
+    } else if (keyPress === 38) {
+      // Go up the command list on up key
+    } else if (keyPress === 40) {
+      // Go down the command list on down key
+
+    }
   });
 }
 
 // Executes command from terminal input
 function executeCommand(targetElement, gitState) {
+
   var command = targetElement.value.trim();
   gitState.currentCommand = command;
+  // Push current command to terminal history
   if (command !== '') gitState.previousCommands.unshift(command);
+
+  // Set terminal count to 0
+  gitState.terminalCount = 0;
+
+  // Set value of input to empty string
   targetElement.value = '';
+
+  // Write current command to terminal
   writeToTerminal(command);
+
+  // Find current command
   var terminalFunction = findCommand(terminalResult, command, gitState);
+
+  // Execute current command
   terminalFunction();
-  window.terminalFunction = terminalFunction;
-  console.log(terminalFunction);
+  gitState.render(gitState);
 }
 
 // Writes string to terminal
@@ -1035,41 +1054,57 @@ function writeToTerminal(command, classNames) {
   var elementType = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'li';
 
   var termCmdList = document.querySelector('#terminal-command-list');
+
+  // Create list element
   var listElement = document.createElement(elementType);
+
   if (!!classNames) {
+    // Add class to list element
     listElement.classList.add(classNames.split(' '));
   }
+  // Write inner text for list element
   listElement.innerText = command;
+
+  // Add list element to terminal
   termCmdList.appendChild(listElement);
+
+  // Scroll terminal down to current list element
   termCmdList.scrollTop += listElement.scrollHeight;
 }
 
 // Finds command in commandslist object
 function findCommand(term, command, gitState) {
+  // split command to individual arguments
   command = command.split(' ');
   var currentCommand = {};
   while (typeof currentCommand !== 'function') {
+    // locate argument in terminal list
     currentCommand = term[command.shift()];
     if (!currentCommand) {
+      // return invalid function
       currentCommand = terminalResult['invalid'];
       break;
     }
+    // if current command is a sub-object, enter object to find function
     if (typeof currentCommand !== 'function') {
       term = currentCommand;
     }
   }
+  // prepare function for execution
   return prepareFunction(currentCommand, gitState, command);
 }
 
 // Returns function that will automatically execute the function
 function prepareFunction(terminalFunction, gitState, remainingArguments) {
   return function () {
+    // returns closure with gitstate and remaining arguments set
     terminalFunction.apply(undefined, [gitState].concat(_toConsumableArray(remainingArguments)));
   };
 }
 
 function invalidCommand(gitState) {
   var currentCommand = gitState.currentCommand;
+  // write error messages
   writeToTerminal('-bash: ' + currentCommand + ': command not found', 'invalid', 'div');
 }
 // $('#command-input').keyup( e => {
@@ -20437,6 +20472,49 @@ module.exports = isLength;
 
 
 Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _display = __webpack_require__(80);
+
+var _display2 = _interopRequireDefault(_display);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var gitState = {
+    initialized: false,
+    remote: false,
+    branch: {
+        checkout: false,
+        name: '',
+        fileStructure: {},
+        commitHistory: [],
+        status: false
+    },
+    currentCommand: '',
+    previousCommands: [],
+    fileStructure: {},
+    terminalCount: 0,
+    level: 1,
+    previousLevel: 1,
+    render: _display2.default,
+    commitHistory: [],
+    commit: '',
+    step: '',
+    instructions: '',
+    username: ''
+};
+
+exports.default = gitState;
+
+/***/ }),
+/* 80 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
@@ -20580,49 +20658,6 @@ var render = function render(gitState) {
 };
 
 exports.default = render;
-
-/***/ }),
-/* 80 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _display = __webpack_require__(79);
-
-var _display2 = _interopRequireDefault(_display);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var gitState = {
-    initialized: false,
-    remote: false,
-    branch: {
-        checkout: false,
-        name: '',
-        fileStructure: {},
-        commitHistory: [],
-        status: false
-    },
-    currentCommand: '',
-    previousCommands: [],
-    fileStructure: {},
-    terminalCount: 0,
-    level: 1,
-    previousLevel: 1,
-    render: _display2.default,
-    commitHistory: [],
-    commit: '',
-    step: '',
-    instructions: '',
-    username: ''
-};
-
-exports.default = gitState;
 
 /***/ })
 /******/ ]);
